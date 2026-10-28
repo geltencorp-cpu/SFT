@@ -10,7 +10,7 @@ def fetch_blog():
     url = "https://rss.blog.naver.com/safe-tytech.xml"
     feed = feedparser.parse(url)
     html = ""
-    for entry in feed.entries[:3]: # 최신 글 3개
+    for entry in feed.entries[:5]: # 최신 글 5개로 변경
         title = entry.title
         link = entry.link
         desc = entry.description
@@ -49,7 +49,7 @@ def fetch_youtube():
         feed = feedparser.parse(feed_url)
 
         html = ""
-        for i, entry in enumerate(feed.entries[:3]): # 최신 영상 3개
+        for i, entry in enumerate(feed.entries[:5]): # 최신 영상 5개로 변경
             title = entry.title
             video_id = entry.yt_videoid
             # 고해상도 썸네일 주소
@@ -80,7 +80,7 @@ def fetch_news():
     url = "https://news.google.com/rss/search?q=%EC%95%88%EC%A0%84%ED%83%9D&hl=ko&gl=KR&ceid=KR:ko"
     feed = feedparser.parse(url)
     html = ""
-    for entry in feed.entries[:3]:
+    for entry in feed.entries[:5]: # 최신 뉴스 5개로 변경
         title = entry.title
         link = entry.link
         pubDate = entry.published
