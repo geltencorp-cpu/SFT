@@ -76,9 +76,6 @@
                     <a href="#blog" class="text-gray-600 hover:text-brand-600 font-bold transition-colors">블로그</a>
                     <a href="#news" class="text-gray-600 hover:text-brand-600 font-bold transition-colors">뉴스</a>
                     <a href="#youtube" class="text-gray-600 hover:text-brand-600 font-bold transition-colors">유튜브</a>
-                    <button onclick="requestSiteUpdate()" class="flex items-center px-4 py-2 bg-brand-50 text-brand-700 rounded-lg hover:bg-brand-100 font-bold transition-colors border border-brand-200 shadow-sm">
-                        <i class="ph-bold ph-arrows-clockwise mr-2"></i>페이지 업데이트
-                    </button>
                 </div>
                 <!-- 모바일 메뉴 버튼 -->
                 <div class="md:hidden flex items-center">
@@ -549,26 +546,6 @@
             } catch (error) {
                 console.error('디스코드 전송 에러:', error);
                 alert('접수 중 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
-            }
-        }
-
-        // 페이지 수동 업데이트 요청 기능
-        async function requestSiteUpdate() {
-            const webhookUrl = "https://discord.com/api/webhooks/1562798601095348305/kHEEBTUPtW6HrdCqWPatfu-o0M41XqMl3YL8tJoprUCaOXcRITYs9TOvDAd3f2GMEzG4"; 
-            
-            const payload = {
-                content: `🔄 **홈페이지 수동 업데이트(최신화) 요청이 들어왔습니다!**\n관리자님, 봇 채널에서 \`!업데이트\` 명령어를 입력하시면 홈페이지가 즉시 최신화됩니다.`
-            };
-
-            try {
-                await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                alert('업데이트 요청이 성공적으로 전송되었습니다. 반영까지 약 2~3분 정도 소요될 수 있습니다.');
-            } catch (error) {
-                alert('요청 중 오류가 발생했습니다.');
             }
         }
     </script>
