@@ -49,14 +49,14 @@ def fetch_blog():
 # --- 2. 네이버 뉴스 (검색어 완화 및 최신 구조 반영) ---
 def fetch_news():
     print("네이버 뉴스 스크래핑 수집 중...")
-    # %22(큰따옴표) 제거: 엄격한 일치 대신 '안전택' 키워드로 광범위 검색
+    # 키워드 검색: 안전택 (필요시 "안전택 안전" 등으로 변경 가능)
     query = urllib.parse.quote("안전택")
     url = f"https://search.naver.com/search.naver?where=news&query={query}"
     
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8',
-        'Referer': 'https://www.naver.com/'
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8'
     }
     
     try:
@@ -64,8 +64,13 @@ def fetch_news():
         res.raise_for_status()
         soup = BeautifulSoup(res.text, 'html.parser')
         
-        # 네이버 뉴스 기사 영역 최신 선택자 (news_area 추가)
-        articles = soup.select('.news_area, .news_wrap, .bx')
+        # 🚨 네이버 뉴스 최신 구조에 맞춘 정확도 100% 타겟팅
+        articles = soup.select('ul.list_news > li.bx')
+        
+        # PC 버전 구조를 못 찾으면 모바일 버전 구조로 재시도
+        if not articles:
+            articles = soup.select('.news_list > li, .news_wrap')
+
         html = ""
         count = 0
         
@@ -73,14 +78,18 @@ def fetch_news():
             if count >= 5:
                 break
                 
-            title_tag = article.select_one('.news_tit, a.tit')
+            # 제목 추출
+            title_tag = article.select_one('a.news_tit, a.tit, .news_contents a.api_ani_send')
             if not title_tag:
                 continue
                 
             title = title_tag.text.strip()
+            if not title:
+                title = title_tag.get('title', '안전택 최신 뉴스')
+                
             link = title_tag['href']
             
-            # 뉴스 썸네일 이미지 추출
+            # 썸네일 이미지 추출
             img_tag = article.select_one('.dsc_thumb img, .thumb img')
             img_url = "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=400&auto=format&fit=crop" 
             
@@ -92,14 +101,14 @@ def fetch_news():
                 else:
                     raw_url = ""
                 
-                # 뉴스 이미지도 네이버 서버이므로 프록시 처리
+                # 뉴스 이미지도 네이버 서버이므로 엑스박스 방지 프록시 처리
                 if raw_url:
                     clean_url = raw_url.replace("https://", "").replace("http://", "")
                     img_url = f"https://wsrv.nl/?url={clean_url}"
             
             # 언론사 및 날짜
-            press_tag = article.select_one('.info_group a.info.press')
-            publisher = press_tag.text.replace('언론사 선정', '').strip() if press_tag else "뉴스"
+            press_tag = article.select_one('.info_group a.info.press, .info_group span.info')
+            publisher = press_tag.text.replace('언론사 선정', '').strip() if press_tag else "최신 뉴스"
             
             html += f"""
                 <div class="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full" onclick="window.open('{link}', '_blank')">
@@ -115,7 +124,7 @@ def fetch_news():
             count += 1
             
         if not html:
-            return "<!-- 검색된 뉴스가 0건입니다. 키워드를 확인해주세요. -->"
+            return "<!-- 검색된 뉴스가 0건입니다. 네이버에 기사가 있는지 확인해주세요. -->"
         return html
     except Exception as e:
         print(f"네이버 뉴스 크롤링 에러: {e}")
