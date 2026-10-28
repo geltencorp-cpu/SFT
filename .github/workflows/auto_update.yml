@@ -1,12 +1,9 @@
 name: Auto Update Content
 
-# 스케줄러 작동 조건
 on:
   schedule:
-    # 매일 한국시간 오전 9시 (UTC 기준 0시)마다 실행됩니다.
     - cron: '0 0 * * *'
   
-  # 원할 때 깃허브 웹사이트에서 수동으로 버튼을 눌러 실행할 수 있게 해줍니다.
   workflow_dispatch:
 
 permissions:
@@ -16,29 +13,27 @@ jobs:
   update-website:
     runs-on: ubuntu-latest
     steps:
-      # 1. 깃허브의 코드(index.html 등)를 가상 서버로 가져옵니다.
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. 파이썬 환경을 세팅합니다.
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      # 3. 크롤링에 필요한 파이썬 라이브러리를 설치합니다.
       - name: Install dependencies
         run: pip install requests beautifulsoup4 feedparser
 
-      # 4. 우리가 만든 파이썬 스크립트를 실행하여 index.html을 수정합니다.
       - name: Run update script
         run: python update_site.py
 
-      # 5. 수정된 내용이 있다면 깃허브에 다시 저장(Commit & Push)합니다.
       - name: Commit and push if changed
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add index.html
-          # 변경사항이 있을 때만 푸시합니다.
-          git diff --quiet && git diff --staged --quiet || (git commit -m "🤖 자동 업데이트: 최신 뉴스, 블로그, 유튜브 반영 완료" && git push)
+          # 충돌 방지: 밀어넣기 전에 최신 코드를 먼저 당겨옵니다(pull rebase)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🤖 자동 업데이트: 최신 뉴스, 블로그, 유튜브 반영 완료" && git pull --rebase origin main && git push)
+```eof
+
+이렇게 스케줄러를 업데이트해 두시고, **[Actions]**에서 한 번 돌려주시면 이제 정말 100% 완벽하게 홈페이지에 뉴스와 블로그가 예쁘게 착! 달라붙어 있을 것입니다. 확인해 보시고 결과 알려주세요!
