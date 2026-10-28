@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import feedparser
 import re
 
-# --- 1. 네이버 블로그 가져오기 (og:image 추출 방식으로 썸네일 완벽 해결) ---
+# --- 1. 네이버 블로그 가져오기 (og:image 추출 방식으로 썸네일 해결, 5개) ---
 def fetch_blog():
     print("블로그 데이터 수집 중...")
     url = "https://rss.blog.naver.com/safe-tytech.xml"
@@ -29,58 +29,21 @@ def fetch_blog():
         text_desc = re.sub(r'<[^>]+>', '', desc)[:120] + "..."
 
         html += f"""
-                <div class="flex flex-col sm:flex-row bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer group" onclick="window.open('{link}', '_blank')">
-                    <div class="sm:w-1/4 h-32 md:h-40 bg-gray-200 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden mb-4 sm:mb-0 sm:mr-6">
+                <div class="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all overflow-hidden flex flex-col h-full" onclick="window.open('{link}', '_blank')">
+                    <div class="w-full h-48 bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
                         <img src="{img_url}" alt="블로그 썸네일" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://via.placeholder.com/400x250?text=Blog'">
                     </div>
-                    <div class="flex flex-col justify-center">
-                        <span class="inline-block py-1 px-2 rounded bg-brand-50 text-brand-600 text-xs font-bold w-max mb-2">안전택 소식</span>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-brand-600 transition-colors">{title}</h3>
-                        <p class="text-gray-600 text-sm line-clamp-2">{text_desc}</p>
+                    <div class="p-5 flex flex-col flex-grow justify-between bg-white">
+                        <div>
+                            <p class="text-xs text-brand-600 font-bold mb-2">안전택 블로그</p>
+                            <h3 class="text-lg font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2">{title}</h3>
+                            <p class="text-gray-500 text-sm mt-2 line-clamp-2">{text_desc}</p>
+                        </div>
                     </div>
                 </div>"""
     return html
 
-# --- 2. 유튜브 영상 가져오기 (유지) ---
-def fetch_youtube():
-    print("유튜브 데이터 수집 중...")
-    try:
-        html_req = requests.get("https://www.youtube.com/@safetytech_official/videos")
-        channel_id_match = re.search(r'href="https://www.youtube.com/channel/(UC[^"]+)"', html_req.text)
-        
-        if not channel_id_match:
-            return "<!-- 유튜브 채널 ID를 찾을 수 없습니다 -->"
-        
-        channel_id = channel_id_match.group(1)
-        feed_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
-        feed = feedparser.parse(feed_url)
-
-        html = ""
-        for i, entry in enumerate(feed.entries[:5]): 
-            title = entry.title
-            video_id = entry.yt_videoid
-            thumbnail_url = f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
-
-            html += f"""
-                <div class="flex flex-col sm:flex-row bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer group" onclick="window.open('https://www.youtube.com/watch?v={video_id}', '_blank')">
-                    <div class="sm:w-1/4 h-32 md:h-40 bg-gray-900 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden mb-4 sm:mb-0 sm:mr-6 relative">
-                        <img src="{thumbnail_url}" alt="유튜브 썸네일" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity">
-                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            <i class="ph-fill ph-play-circle text-5xl text-white opacity-90 group-hover:scale-110 transition-transform shadow-sm rounded-full"></i>
-                        </div>
-                    </div>
-                    <div class="flex flex-col justify-center">
-                        <span class="inline-block py-1 px-2 rounded bg-red-50 text-red-600 text-xs font-bold w-max mb-2">안전택 유튜브</span>
-                        <h3 class="text-xl font-bold text-gray-900 mb-2 group-hover:text-red-600 transition-colors line-clamp-2">{title}</h3>
-                        <p class="text-gray-500 text-sm">클릭하여 영상 시청하기</p>
-                    </div>
-                </div>"""
-        return html
-    except Exception as e:
-        print(f"유튜브 처리 중 에러: {e}")
-        return ""
-
-# --- 3. 네이버 뉴스 가져오기 (정확도 100% 직접 스크래핑) ---
+# --- 2. 네이버 뉴스 직접 스크래핑 (정확도 향상, 5개) ---
 def fetch_news():
     print("네이버 뉴스 데이터 수집 중...")
     # 네이버 뉴스 검색결과 직접 접속
@@ -135,6 +98,46 @@ def fetch_news():
         print(f"뉴스 크롤링 에러: {e}")
         return "<!-- 뉴스 크롤링 실패 -->"
 
+# --- 3. 유튜브 영상 가져오기 (5개) ---
+def fetch_youtube():
+    print("유튜브 데이터 수집 중...")
+    try:
+        html_req = requests.get("https://www.youtube.com/@safetytech_official/videos")
+        channel_id_match = re.search(r'href="https://www.youtube.com/channel/(UC[^"]+)"', html_req.text)
+        
+        if not channel_id_match:
+            return "<!-- 유튜브 채널 ID를 찾을 수 없습니다 -->"
+        
+        channel_id = channel_id_match.group(1)
+        feed_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
+        feed = feedparser.parse(feed_url)
+
+        html = ""
+        for i, entry in enumerate(feed.entries[:5]): 
+            title = entry.title
+            video_id = entry.yt_videoid
+            thumbnail_url = f"https://img.youtube.com/vi/{video_id}/hqdefault.jpg"
+
+            html += f"""
+                <div class="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-all overflow-hidden flex flex-col h-full" onclick="window.open('https://www.youtube.com/watch?v={video_id}', '_blank')">
+                    <div class="w-full h-48 bg-gray-900 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
+                        <img src="{thumbnail_url}" alt="유튜브 썸네일" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity">
+                        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                            <i class="ph-fill ph-play-circle text-5xl text-white opacity-90 group-hover:scale-110 transition-transform shadow-sm rounded-full"></i>
+                        </div>
+                    </div>
+                    <div class="p-5 flex flex-col flex-grow justify-between bg-white">
+                        <div>
+                            <p class="text-xs text-red-600 font-bold mb-2">안전택 유튜브</p>
+                            <h3 class="text-lg font-bold text-gray-900 group-hover:text-red-600 transition-colors line-clamp-2">{title}</h3>
+                        </div>
+                    </div>
+                </div>"""
+        return html
+    except Exception as e:
+        print(f"유튜브 처리 중 에러: {e}")
+        return ""
+
 # --- 4. 메인 실행 및 HTML 교체 ---
 if __name__ == "__main__":
     try:
@@ -155,8 +158,3 @@ if __name__ == "__main__":
         print("✅ 모든 콘텐츠가 성공적으로 index.html에 업데이트 되었습니다!")
     except Exception as e:
         print(f"❌ 업데이트 중 오류 발생: {e}")
-```
-
-이 코드를 깃허브 `update_site.py` 파일에 덮어씌워 주시고, 다시 한번 **[Actions]** 탭에서 **[Run workflow]**를 실행해 보세요!
-
-이제 뉴스 섹션에는 신문 아이콘이 아닌 **진짜 네이버 뉴스 사진과 기사 제목**이 뜨고, 블로그 섹션에도 **진짜 블로그 썸네일 사진**이 예쁘게 꽉 차게 들어갈 것입니다! (로딩이 1~2분 정도 걸릴 수 있습니다) 성공적으로 화면이 바뀌는지 확인해 주세요!
