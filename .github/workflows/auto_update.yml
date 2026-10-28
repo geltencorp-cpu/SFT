@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # 핵심 해결책: 전체 기록을 가져와서 충돌을 원천 차단합니다!
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -44,5 +44,5 @@ jobs:
           # 3. 최신 원본을 당겨와서 안전하게 합치기
           git pull --rebase origin main
           
-          # 4. 최종적으로 홈페이지에 밀어넣기
-          git push origin main
+          # 4. 꼬인 기록 무시하고 최종적으로 홈페이지에 강제로 밀어넣기 (--force 추가)
+          git push origin main --force
