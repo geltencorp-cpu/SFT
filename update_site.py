@@ -2,8 +2,9 @@ import feedparser
 from bs4 import BeautifulSoup
 import requests
 import re
+import urllib.parse
 
-# --- 1. 네이버 블로그 (RSS 본문 이미지 추출 방식) ---
+# --- 1. 네이버 블로그 (RSS 본문 이미지 추출 & 프록시 우회) ---
 def fetch_blog():
     print("블로그 RSS 수집 중...")
     url = "https://rss.blog.naver.com/safe-tytech.xml"
@@ -25,14 +26,17 @@ def fetch_blog():
             desc_soup = BeautifulSoup(entry.description, 'html.parser')
             img_tag = desc_soup.find('img')
             if img_tag and img_tag.has_attr('src'):
-                img_url = img_tag['src']
+                raw_url = img_tag['src']
+                # 🚨 핵심: 네이버 이미지 차단을 뚫기 위해 무료 이미지 프록시(wsrv.nl)를 거침
+                clean_url = raw_url.replace("https://", "").replace("http://", "")
+                img_url = f"https://wsrv.nl/?url={clean_url}"
         except:
             pass
             
         html += f"""
             <div class="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full" onclick="window.open('{link}', '_blank')">
                 <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
-                    <img src="{img_url}" alt="블로그 썸네일" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&w=400&auto=format&fit=crop'">
+                    <img src="{img_url}" alt="블로그 썸네일" crossorigin="anonymous" referrerpolicy="no-referrer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&w=400&auto=format&fit=crop'">
                 </div>
                 <div class="p-4 flex flex-col flex-grow bg-white">
                     <p class="text-[11px] text-brand-600 font-bold mb-1">안전택 블로그</p>
@@ -42,18 +46,17 @@ def fetch_blog():
         count += 1
     return html
 
-# --- 2. 네이버 뉴스 (스텔스 우회 방식) ---
+# --- 2. 네이버 뉴스 (검색어 완화 및 최신 구조 반영) ---
 def fetch_news():
     print("네이버 뉴스 스크래핑 수집 중...")
-    # %22 는 큰따옴표(") 입니다. "안전택" 이라는 단어가 반드시 포함된 뉴스만 검색
-    url = "https://search.naver.com/search.naver?where=news&query=%22%EC%95%88%EC%A0%84%ED%83%9D%22"
+    # %22(큰따옴표) 제거: 엄격한 일치 대신 '안전택' 키워드로 광범위 검색
+    query = urllib.parse.quote("안전택")
+    url = f"https://search.naver.com/search.naver?where=news&query={query}"
     
-    # 🚨 핵심: 네이버의 봇 차단을 뚫기 위한 강력한 사람 위장 헤더
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
         'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8',
-        'Referer': 'https://www.naver.com/',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8'
+        'Referer': 'https://www.naver.com/'
     }
     
     try:
@@ -61,7 +64,8 @@ def fetch_news():
         res.raise_for_status()
         soup = BeautifulSoup(res.text, 'html.parser')
         
-        articles = soup.select('.news_wrap, .bx')
+        # 네이버 뉴스 기사 영역 최신 선택자 (news_area 추가)
+        articles = soup.select('.news_area, .news_wrap, .bx')
         html = ""
         count = 0
         
@@ -69,50 +73,53 @@ def fetch_news():
             if count >= 5:
                 break
                 
-            title_tag = article.select_one('.news_tit')
+            title_tag = article.select_one('.news_tit, a.tit')
             if not title_tag:
                 continue
                 
             title = title_tag.text.strip()
             link = title_tag['href']
             
-            # 썸네일 이미지 추출
-            img_tag = article.select_one('.dsc_thumb img')
-            img_url = "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=400&auto=format&fit=crop" # 기본 신문 이미지
+            # 뉴스 썸네일 이미지 추출
+            img_tag = article.select_one('.dsc_thumb img, .thumb img')
+            img_url = "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=400&auto=format&fit=crop" 
             
             if img_tag:
                 if img_tag.has_attr('data-lazysrc'):
-                    img_url = img_tag['data-lazysrc']
+                    raw_url = img_tag['data-lazysrc']
                 elif img_tag.has_attr('src') and not img_tag['src'].startswith('data:image'):
-                    img_url = img_tag['src']
+                    raw_url = img_tag['src']
+                else:
+                    raw_url = ""
+                
+                # 뉴스 이미지도 네이버 서버이므로 프록시 처리
+                if raw_url:
+                    clean_url = raw_url.replace("https://", "").replace("http://", "")
+                    img_url = f"https://wsrv.nl/?url={clean_url}"
             
-            # 신문사 이름 및 날짜
-            info_tags = article.select('.info_group .info')
-            publisher = info_tags[0].text.strip().replace('언론사 선정', '') if info_tags else "뉴스"
-            date_str = info_tags[-1].text.strip() if len(info_tags) > 1 else "최신 기사"
+            # 언론사 및 날짜
+            press_tag = article.select_one('.info_group a.info.press')
+            publisher = press_tag.text.replace('언론사 선정', '').strip() if press_tag else "뉴스"
             
             html += f"""
                 <div class="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full" onclick="window.open('{link}', '_blank')">
                     <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
-                        <img src="{img_url}" alt="뉴스 썸네일" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=400&auto=format&fit=crop'">
+                        <img src="{img_url}" alt="뉴스 썸네일" crossorigin="anonymous" referrerpolicy="no-referrer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=400&auto=format&fit=crop'">
                         <div class="absolute inset-0 bg-black/5"></div>
                     </div>
                     <div class="p-4 flex flex-col flex-grow bg-white">
-                        <div class="flex justify-between items-center mb-1">
-                            <p class="text-[11px] text-brand-600 font-bold">{publisher}</p>
-                            <p class="text-[10px] text-gray-400">{date_str}</p>
-                        </div>
+                        <p class="text-[11px] text-brand-600 font-bold mb-1">{publisher}</p>
                         <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">{title}</h3>
                     </div>
                 </div>"""
             count += 1
             
         if not html:
-            return "<!-- 검색된 뉴스가 없습니다. -->"
+            return "<!-- 검색된 뉴스가 0건입니다. 키워드를 확인해주세요. -->"
         return html
     except Exception as e:
         print(f"네이버 뉴스 크롤링 에러: {e}")
-        return "<!-- 뉴스 크롤링 실패 -->"
+        return f"<!-- 뉴스 크롤링 실패: {e} -->"
 
 # --- 3. 유튜브 영상 (수정 없음) ---
 def fetch_youtube():
