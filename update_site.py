@@ -46,91 +46,60 @@ def fetch_blog():
         count += 1
     return html
 
-# --- 2. 네이버 뉴스 (검색어 완화 및 최신 구조 반영) ---
+# --- 2. 네이버 뉴스 (공식 API 적용 - 차단 100% 방지) ---
 def fetch_news():
-    print("네이버 뉴스 스크래핑 수집 중...")
-    # 키워드 검색: 안전택 (필요시 "안전택 안전" 등으로 변경 가능)
-    query = urllib.parse.quote("안전택")
-    url = f"https://search.naver.com/search.naver?where=news&query={query}"
+    print("네이버 뉴스 데이터 수집 중 (공식 API)...")
     
+    # 대표님 전용 네이버 API 키 세팅 완료
+    client_id = "V3bLjIBKR3S8lYBXqpZ3"
+    client_secret = "GLTYclH7lH"
+    
+    url = "https://openapi.naver.com/v1/search/news.json"
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-        'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8'
+        "X-Naver-Client-Id": client_id,
+        "X-Naver-Client-Secret": client_secret
+    }
+    params = {
+        "query": "안전택", # 검색어
+        "display": 5,      # 가져올 뉴스 개수
+        "sort": "date"     # 최신순 정렬
     }
     
+    html = ""
     try:
-        res = requests.get(url, headers=headers, timeout=10)
-        res.raise_for_status()
-        soup = BeautifulSoup(res.text, 'html.parser')
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()
+        data = response.json()
         
-        # 🚨 네이버 뉴스 최신 구조에 맞춘 정확도 100% 타겟팅
-        articles = soup.select('ul.list_news > li.bx')
-        
-        # PC 버전 구조를 못 찾으면 모바일 버전 구조로 재시도
-        if not articles:
-            articles = soup.select('.news_list > li, .news_wrap')
-
-        html = ""
-        count = 0
-        
-        for article in articles:
-            if count >= 5:
-                break
-                
-            # 제목 추출
-            title_tag = article.select_one('a.news_tit, a.tit, .news_contents a.api_ani_send')
-            if not title_tag:
-                continue
-                
-            title = title_tag.text.strip()
-            if not title:
-                title = title_tag.get('title', '안전택 최신 뉴스')
-                
-            link = title_tag['href']
+        for item in data.get('items', []):
+            # API가 주는 제목의 <b> 태그 등 불필요한 기호 깔끔하게 제거
+            title = re.sub(r'<[^>]+>', '', item['title'])
+            title = title.replace('&quot;', '"').replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>').replace('&apos;', "'")
+            link = item['link']
             
-            # 썸네일 이미지 추출
-            img_tag = article.select_one('.dsc_thumb img, .thumb img')
-            img_url = "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=400&auto=format&fit=crop" 
-            
-            if img_tag:
-                if img_tag.has_attr('data-lazysrc'):
-                    raw_url = img_tag['data-lazysrc']
-                elif img_tag.has_attr('src') and not img_tag['src'].startswith('data:image'):
-                    raw_url = img_tag['src']
-                else:
-                    raw_url = ""
-                
-                # 뉴스 이미지도 네이버 서버이므로 엑스박스 방지 프록시 처리
-                if raw_url:
-                    clean_url = raw_url.replace("https://", "").replace("http://", "")
-                    img_url = f"https://wsrv.nl/?url={clean_url}"
-            
-            # 언론사 및 날짜
-            press_tag = article.select_one('.info_group a.info.press, .info_group span.info')
-            publisher = press_tag.text.replace('언론사 선정', '').strip() if press_tag else "최신 뉴스"
+            # API 특성상 뉴스 썸네일은 제공되지 않아 고화질 기본 이미지 적용
+            img_url = "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=400&auto=format&fit=crop"
             
             html += f"""
-                <div class="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full" onclick="window.open('{link}', '_blank')">
-                    <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
-                        <img src="{img_url}" alt="뉴스 썸네일" crossorigin="anonymous" referrerpolicy="no-referrer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=400&auto=format&fit=crop'">
-                        <div class="absolute inset-0 bg-black/5"></div>
-                    </div>
-                    <div class="p-4 flex flex-col flex-grow bg-white">
-                        <p class="text-[11px] text-brand-600 font-bold mb-1">{publisher}</p>
-                        <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">{title}</h3>
-                    </div>
-                </div>"""
-            count += 1
+            <div class="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full" onclick="window.open('{link}', '_blank')">
+                <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
+                    <img src="{img_url}" alt="뉴스 썸네일" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-black/5"></div>
+                </div>
+                <div class="p-4 flex flex-col flex-grow bg-white">
+                    <p class="text-[11px] text-brand-600 font-bold mb-1">최신 뉴스</p>
+                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">{title}</h3>
+                </div>
+            </div>"""
             
         if not html:
-            return "<!-- 검색된 뉴스가 0건입니다. 네이버에 기사가 있는지 확인해주세요. -->"
+            return "<!-- 검색된 뉴스가 0건입니다. -->"
         return html
     except Exception as e:
-        print(f"네이버 뉴스 크롤링 에러: {e}")
-        return f"<!-- 뉴스 크롤링 실패: {e} -->"
+        print(f"뉴스 수집 중 오류 발생: {e}")
+        return f"<!-- 뉴스 API 수집 실패: {e} -->"
 
-# --- 3. 유튜브 영상 (수정 없음) ---
+# --- 3. 유튜브 영상 ---
 def fetch_youtube():
     print("유튜브 데이터 수집 중...")
     try:
