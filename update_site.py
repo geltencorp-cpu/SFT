@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 import feedparser
 import re
 
-# --- 1. 네이버 블로그 가져오기 (og:image 추출 방식으로 썸네일 해결, 5개) ---
 def fetch_blog():
     print("블로그 데이터 수집 중...")
     url = "https://rss.blog.naver.com/safe-tytech.xml"
@@ -43,7 +42,6 @@ def fetch_blog():
                 </div>"""
     return html
 
-# --- 2. 네이버 뉴스 직접 스크래핑 (정확도 향상, 5개) ---
 def fetch_news():
     print("네이버 뉴스 데이터 수집 중...")
     # 네이버 뉴스 검색결과 직접 접속
@@ -98,7 +96,6 @@ def fetch_news():
         print(f"뉴스 크롤링 에러: {e}")
         return "<!-- 뉴스 크롤링 실패 -->"
 
-# --- 3. 유튜브 영상 가져오기 (5개) ---
 def fetch_youtube():
     print("유튜브 데이터 수집 중...")
     try:
@@ -138,7 +135,6 @@ def fetch_youtube():
         print(f"유튜브 처리 중 에러: {e}")
         return ""
 
-# --- 4. 메인 실행 및 HTML 교체 ---
 if __name__ == "__main__":
     try:
         blog_html = fetch_blog()
