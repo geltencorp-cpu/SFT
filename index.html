@@ -108,7 +108,6 @@
             </p>
             <a href="#proposal" class="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-semibold rounded-lg text-brand-900 bg-white hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
                 기관별 맞춤 제안서 확인하기
-                <i class="ph-bold ph-arrow-down ml-2"></i>
             </a>
         </div>
     </section>
@@ -162,8 +161,34 @@
             </div>
 
             <!-- 동적으로 내용이 채워질 제안서 영역 -->
-            <div id="proposal-content-area" class="hidden">
+            <div id="proposal-content-area" class="hidden mb-12">
                 <!-- 자바스크립트가 여기에 HTML을 삽입합니다 -->
+            </div>
+
+            <!-- 항상 보이는 제안서 및 견적 요청 폼 -->
+            <div class="bg-white rounded-3xl p-8 md:p-10 shadow-lg border border-gray-200 max-w-4xl mx-auto mt-12 relative overflow-hidden">
+                <!-- 폼 배경 데코레이션 -->
+                <div class="absolute top-0 right-0 -mt-10 -mr-10 text-emerald-50 opacity-50 pointer-events-none">
+                    <i class="ph-fill ph-envelope-simple-open text-[150px]"></i>
+                </div>
+                
+                <div class="relative z-10">
+                    <div class="text-center mb-8">
+                        <h4 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2">상세 제안서 및 견적 요청하기</h4>
+                        <p class="text-gray-500">아래 정보를 남겨주시면, 담당자가 확인 후 보안 처리된 맞춤형 제안서 링크를 신속하게 보내드립니다.</p>
+                    </div>
+                    
+                    <form onsubmit="submitToDiscord(event)">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <input type="text" id="orgName" placeholder="기관명 (예: 서울시청)" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow bg-gray-50 focus:bg-white" required>
+                            <input type="text" id="managerName" placeholder="담당자 성함" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow bg-gray-50 focus:bg-white" required>
+                            <input type="tel" id="contact" placeholder="연락처 (- 없이 입력)" class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition-shadow bg-gray-50 focus:bg-white" required>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="w-full md:w-auto px-12 py-4 rounded-xl font-bold text-white text-lg bg-emerald-600 hover:bg-emerald-700 shadow-md transition-all transform hover:-translate-y-1">맞춤 제안서 받기</button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
         </div>
@@ -496,27 +521,15 @@
                         <h4 class="text-xl font-bold text-gray-900 mb-6 flex items-center mt-10">
                             <i class="ph-fill ph-list-checks text-brand-600 mr-2 text-2xl"></i> 추천 교육 커리큘럼 <span class="text-sm font-normal text-gray-400 ml-3">(항목을 클릭하여 영상을 확인하세요)</span>
                         </h4>
-                        <div class="mb-12">
+                        <div class="mb-8">
                             ${curriculumHtml}
                         </div>
 
-                        <!-- 폼 영역 -->
-                        <div class="bg-gray-50 rounded-2xl p-8 border border-gray-200">
-                            <h4 class="text-lg font-bold text-gray-900 mb-2">상세 제안서 및 견적 요청하기</h4>
-                            <p class="text-sm text-gray-500 mb-6">아래 정보를 남겨주시면, 담당자가 확인 후 보안 처리된 맞춤형 제안서 링크를 신속하게 보내드립니다.</p>
-                            
-                            <form onsubmit="submitToDiscord(event)">
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                                    <input type="text" id="orgName" placeholder="기관명 (예: 서울시청)" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-shadow" required>
-                                    <input type="text" id="managerName" placeholder="담당자 성함" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-shadow" required>
-                                    <input type="tel" id="contact" placeholder="연락처 (- 없이 입력)" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 outline-none transition-shadow" required>
-                                </div>
-                                <div class="flex justify-end space-x-3">
-                                    <button type="button" onclick="document.getElementById('proposal-content-area').classList.add('hidden')" class="px-6 py-3 rounded-lg font-semibold text-gray-600 bg-white border border-gray-300 hover:bg-gray-50 transition-colors">닫기</button>
-                                    <!-- 버튼 색상을 텍스트 흰색(text-white), 배경 초록색(bg-emerald-600)으로 명확히 고정 -->
-                                    <button type="submit" class="px-8 py-3 rounded-lg font-bold text-white bg-emerald-600 hover:bg-emerald-700 shadow-md transition-colors">맞춤 제안서 받기</button>
-                                </div>
-                            </form>
+                        <!-- 닫기 버튼 -->
+                        <div class="text-center mt-8 border-t border-gray-100 pt-8">
+                            <button type="button" onclick="document.getElementById('proposal-content-area').classList.add('hidden')" class="px-8 py-3 rounded-xl font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 transition-colors shadow-sm">
+                                상세 내용 닫기 <i class="ph-bold ph-caret-up ml-1"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -558,11 +571,10 @@
                 
                 alert('제안서 요청이 성공적으로 접수되었습니다! 담당자가 확인 후 연락드리겠습니다.');
                 
-                // 폼 입력란 초기화 및 닫기
+                // 폼 입력란 초기화 (닫기 기능 제거)
                 document.getElementById('orgName').value = '';
                 document.getElementById('managerName').value = '';
                 document.getElementById('contact').value = '';
-                document.getElementById('proposal-content-area').classList.add('hidden');
 
             } catch (error) {
                 console.error('디스코드 전송 에러:', error);
