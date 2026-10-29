@@ -157,6 +157,28 @@ def get_blog_image(entry, log_no):
     return ""
 
 
+
+def find_local(dir_path, name, rel_prefix):
+    """이미 저장된 이미지가 있으면 상대경로를 돌려준다(재다운로드 방지)."""
+    if os.path.isdir(dir_path):
+        for fn in os.listdir(dir_path):
+            if os.path.splitext(fn)[0] == name:
+                return f"{rel_prefix}/{fn}"
+    return ""
+
+
+def cleanup_dir(dir_path, keep_names):
+    """현재 사용하지 않는 오래된 이미지를 삭제해 저장소 용량을 줄인다."""
+    if not os.path.isdir(dir_path):
+        return
+    for fn in os.listdir(dir_path):
+        if os.path.splitext(fn)[0] not in keep_names:
+            try:
+                os.remove(os.path.join(dir_path, fn))
+            except OSError:
+                pass
+
+
 def image_variants(raw):
     """네이버 이미지는 type 값에 따라 404가 나기도 해서 여러 형태를 순서대로 시도한다."""
     raw = raw.replace("http://", "https://", 1)
@@ -209,21 +231,32 @@ def fetch_blog():
         print(f"❌ 블로그 RSS 오류: {e}")
         return ""
 
-    out = ""
+    out, keep = "", set()
     for entry in feed.entries[:MAX_ITEMS]:
         log_no = get_log_no(entry)
-        raw = get_blog_image(entry, log_no)
+        name = log_no or str(abs(hash(entry.link)))
         img_url = BLOG_FALLBACK_IMG
-        if raw:
-            print(f"  [{log_no}] 원본 이미지 주소: {raw}")
-            local = save_image(raw, log_no or str(abs(hash(entry.link))))
-            img_url = local or proxy_img(raw)
-            print(f"  [{log_no}] 이미지: {'저장됨 ' + local if local else '프록시 사용'}")
+
+        existing = find_local(BLOG_IMG_DIR, name, "assets/blog")
+        if existing:
+            img_url = existing
+            keep.add(name)
+            print(f"  [{log_no}] 기존 이미지 재사용")
         else:
-            print(f"  [{log_no}] ⚠️ 이미지를 찾지 못해 기본 이미지 사용")
+            raw = get_blog_image(entry, log_no)
+            if raw:
+                local = save_image(raw, name)
+                img_url = local or proxy_img(raw)
+                if local:
+                    keep.add(name)
+                print(f"  [{log_no}] 이미지: {'저장됨 ' + local if local else '프록시 사용'}")
+            else:
+                print(f"  [{log_no}] ⚠️ 이미지를 찾지 못해 기본 이미지 사용")
 
         out += card(entry.link, img_url, "블로그 썸네일", "안전택 블로그", entry.title, BLOG_FALLBACK_IMG)
 
+    if out:
+        cleanup_dir(BLOG_IMG_DIR, keep)
     print(f"✅ 블로그 {min(len(feed.entries), MAX_ITEMS)}건")
     return out
 
@@ -334,7 +367,7 @@ def yt_from_api():
     cid = resolve_channel_id()
     res = requests.get(
         "https://www.googleapis.com/youtube/v3/playlistItems",
-        params={"part": "snippet", "playlistId": "UU" + cid[2:], "maxResults": MAX_ITEMS, "key": YOUTUBE_API_KEY},
+        params={"part": "snippet", "playlistId": "UU" + cid[2:], "maxResults": MAX_ITEMS * 3, "key": YOUTUBE_API_KEY},
         timeout=TIMEOUT,
     )
     res.raise_for_status()
@@ -357,7 +390,7 @@ def yt_from_rss():
                 res = requests.get(u, headers=HEADERS, timeout=TIMEOUT)
                 res.raise_for_status()
                 feed = feedparser.parse(res.content)
-                vids = [(e.yt_videoid, e.title) for e in feed.entries[:MAX_ITEMS] if e.get("yt_videoid")]
+                vids = [(e.yt_videoid, e.title) for e in feed.entries[:MAX_ITEMS * 3] if e.get("yt_videoid")]
                 if vids:
                     return vids
             except Exception as e:
@@ -370,7 +403,7 @@ def _extract_videos(data):
     videos, seen = [], set()
 
     def add(vid, title):
-        if vid and title and vid not in seen and len(videos) < MAX_ITEMS:
+        if vid and title and vid not in seen and len(videos) < MAX_ITEMS * 3:
             seen.add(vid)
             videos.append((vid, title))
 
@@ -424,7 +457,7 @@ def yt_from_ids():
     for vid in re.findall(r'"videoId":"([\w-]{11})"', text):
         if vid not in ids:
             ids.append(vid)
-        if len(ids) >= MAX_ITEMS:
+        if len(ids) >= MAX_ITEMS * 3:
             break
     if not ids:
         raise RuntimeError("videoId를 찾지 못했습니다.")
@@ -445,31 +478,83 @@ def yt_from_ids():
     return videos
 
 
+YT_IMG_DIR = os.path.join(BASE_DIR, "assets", "youtube")
+
+
+def get_yt_thumb(vid):
+    """실제 썸네일을 내려받아 저장. 유튜브의 회색 기본 이미지(작은 용량)는 걸러낸다."""
+    existing = find_local(YT_IMG_DIR, vid, "assets/youtube")
+    if existing:
+        return existing
+    for q in ("maxresdefault", "sddefault", "hqdefault", "mqdefault"):
+        try:
+            r = requests.get(f"https://i.ytimg.com/vi/{vid}/{q}.jpg", headers=HEADERS, timeout=TIMEOUT)
+            if r.ok and r.headers.get("content-type", "").startswith("image") and len(r.content) > 3000:
+                os.makedirs(YT_IMG_DIR, exist_ok=True)
+                with open(os.path.join(YT_IMG_DIR, f"{vid}.jpg"), "wb") as f:
+                    f.write(r.content)
+                return f"assets/youtube/{vid}.jpg"
+        except Exception:
+            pass
+    return ""
+
+
+def yt_exists(vid):
+    """삭제된 영상(404)만 제외. 비공개/임베드 제한(401)은 판단 불가라 통과."""
+    try:
+        r = requests.get(
+            "https://www.youtube.com/oembed",
+            params={"url": f"https://www.youtube.com/watch?v={vid}", "format": "json"},
+            headers=HEADERS, timeout=TIMEOUT,
+        )
+        return r.status_code != 404
+    except Exception:
+        return True
+
+
 def fetch_youtube():
     print("유튜브 데이터 수집 중...")
-    videos = []
+    candidates = []
     for name, fn in (("API", yt_from_api), ("RSS", yt_from_rss), ("페이지 파싱", yt_from_page), ("ID+oEmbed", yt_from_ids)):
         try:
-            videos = fn()
-            if videos:
-                print(f"  {name} 방식 성공 ({len(videos)}건)")
+            candidates = fn()
+            if candidates:
+                print(f"  {name} 방식 성공 (후보 {len(candidates)}건)")
                 break
             print(f"  {name} 방식: 0건")
         except Exception as e:
             print(f"  {name} 방식 실패: {e}")
 
-    if not videos:
+    if not candidates:
         print("❌ 유튜브 영상을 가져오지 못했습니다.")
         return ""
 
-    out = ""
-    for vid, title in videos:
-        thumb = f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg"
+    out, used, seen, keep = "", 0, set(), set()
+    for vid, title in candidates:
+        if used >= MAX_ITEMS:
+            break
+        if vid in seen:
+            continue
+        seen.add(vid)
+        if not yt_exists(vid):
+            print(f"  건너뜀(삭제된 영상): {vid} {title}")
+            continue
+        thumb = get_yt_thumb(vid)
+        if not thumb:
+            print(f"  건너뜀(썸네일 없음/처리 중/비공개 가능): {vid} {title}")
+            continue
         out += card(
             f"https://www.youtube.com/watch?v={vid}", thumb, "유튜브 썸네일",
-            "안전택 유튜브", title, thumb, accent="red", video=True,
+            "안전택 유튜브", title, f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg",
+            accent="red", video=True,
         )
-    print(f"✅ 유튜브 {len(videos)}건")
+        used += 1
+        keep.add(vid)
+        print(f"  [{vid}] {title}")
+
+    if used:
+        cleanup_dir(YT_IMG_DIR, keep)
+    print(f"✅ 유튜브 {used}건")
     return out
 
 
