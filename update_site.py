@@ -99,16 +99,28 @@ def fetch_news():
         print(f"뉴스 수집 중 오류 발생: {e}")
         return f"<!-- 뉴스 API 수집 실패: {e} -->"
 
-# --- 3. 유튜브 영상 ---
+# --- 3. 유튜브 영상 (최신 내부 데이터 구조 반영) ---
 def fetch_youtube():
     print("유튜브 데이터 수집 중...")
     try:
-        headers = {'User-Agent': 'Mozilla/5.0'}
-        html_req = requests.get("https://www.youtube.com/@safetytech_official/videos", headers=headers, timeout=10)
-        channel_id_match = re.search(r'href="https://www.youtube.com/channel/(UC[^"]+)"', html_req.text)
+        # 로봇이 아닌 일반 크롬 브라우저처럼 완벽하게 위장막 강화
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
+        }
         
+        # 채널 메인 홈에서 ID를 찾는 것이 훨씬 안정적입니다.
+        html_req = requests.get("https://www.youtube.com/@safetytech_official", headers=headers, timeout=10)
+        
+        # 🚨 핵심: 유튜브 최신 내부 데이터(ytInitialData)에서 UC로 시작하는 채널 고유 ID만 정확하게 추출
+        channel_id_match = re.search(r'"browseId":"(UC[\w-]+)"', html_req.text)
+        
+        # 혹시 못 찾을 경우를 대비한 예전 방식 2차 시도
         if not channel_id_match:
-            return "<!-- 유튜브 채널 ID를 찾을 수 없습니다 -->"
+            channel_id_match = re.search(r'channel/(UC[\w-]+)', html_req.text)
+            
+        if not channel_id_match:
+            print("❌ 유튜브 채널 ID를 찾지 못했습니다.")
+            return "<!-- 유튜브 채널 ID를 찾을 수 없습니다. -->"
         
         channel_id = channel_id_match.group(1)
         feed_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
@@ -136,9 +148,9 @@ def fetch_youtube():
         return html
     except Exception as e:
         print(f"유튜브 처리 중 에러: {e}")
-        return "<!-- 유튜브 데이터를 불러올 수 없습니다. -->"
-
-# --- 4. 메인 실행 및 HTML 교체 ---
+        return f"<!-- 유튜브 데이터를 불러올 수 없습니다: {e} -->"
+        
+        # --- 4. 메인 실행 및 HTML 교체 ---
 if __name__ == "__main__":
     try:
         blog_html = fetch_blog()
