@@ -1,1 +1,49 @@
+name: Update site content
 
+on:
+  schedule:
+    # 매일 한국시간 새벽 3시 (GitHub는 UTC 기준이라 전날 18:00 UTC)
+    - cron: "0 18 * * *"
+  workflow_dispatch: # Actions 탭에서 수동 실행 버튼 사용 가능
+
+permissions:
+  contents: write # 갱신된 index.html / assets 를 저장소에 커밋하기 위해 필요
+
+concurrency:
+  group: update-site
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run update script
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: python update_site.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A index.html assets
+          if git diff --cached --quiet; then
+            echo "변경 사항 없음"
+          else
+            git commit -m "chore: 자동 콘텐츠 갱신 $(TZ=Asia/Seoul date +'%Y-%m-%d %H:%M')"
+            git push
+          fi
