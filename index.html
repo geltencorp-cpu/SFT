@@ -165,34 +165,29 @@
                 <!-- 자바스크립트가 여기에 HTML을 삽입합니다 -->
             </div>
 
-<!-- 상세 제안서 및 견적 요청 폼 영역 -->
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 md:p-10 relative overflow-hidden text-center max-w-5xl mx-auto mt-12">
-    <!-- 배경 장식 (우측 상단 편지봉투 느낌) -->
-    <div class="absolute top-0 right-0 opacity-5 pointer-events-none transform translate-x-1/4 -translate-y-1/4">
-        <i class="ph-fill ph-envelope-simple text-9xl"></i>
-    </div>
-    
-    <div class="relative z-10 mb-8">
-        <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3">상세 제안서 및 견적 요청하기</h2>
-        <p class="text-gray-600 text-sm md:text-base break-keep">아래 정보를 남겨주시면, 담당자가 확인 후 보안 처리된 맞춤형 제안서 링크를 신속하게 보내드립니다.</p>
-    </div>
-    
-    <form class="max-w-5xl mx-auto relative z-10">
-        <!-- 💡 입력칸 4개 배열 (모바일: 1줄, 태블릿: 2줄, PC: 4줄 나란히 정렬) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <input type="text" placeholder="기관명 (예: 서울시청)" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-gray-50/50 focus:bg-white text-sm">
-            <input type="text" placeholder="담당자 성함" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-gray-50/50 focus:bg-white text-sm">
-            <input type="tel" placeholder="연락처 (- 없이 입력)" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-gray-50/50 focus:bg-white text-sm">
-            
-            <!-- 💡 새로 추가된 이메일 입력칸 -->
-            <input type="email" placeholder="이메일 주소" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-gray-50/50 focus:bg-white text-sm">
-        </div>
-        
-        <button type="button" class="bg-[#00925B] hover:bg-[#007A4B] text-white font-bold text-base md:text-lg px-10 py-4 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
-            맞춤 제안서 받기
-        </button>
-    </form>
-</div>
+            <!-- 💡 통합된 완벽한 폼 영역 (아이디 부여, 클릭 이벤트 연결 완료) -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 md:p-10 relative overflow-hidden text-center max-w-5xl mx-auto mt-12">
+                <div class="absolute top-0 right-0 opacity-5 pointer-events-none transform translate-x-1/4 -translate-y-1/4">
+                    <i class="ph-fill ph-envelope-simple text-9xl"></i>
+                </div>
+                
+                <div class="relative z-10 mb-8">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3">상세 제안서 및 견적 요청하기</h2>
+                    <p class="text-gray-600 text-sm md:text-base break-keep">아래 정보를 남겨주시면, 메니저가 확인 후 보안 처리된 맞춤형 제안서 링크를 신속하게 보내드립니다.</p>
+                </div>
+                
+                <form class="max-w-5xl mx-auto relative z-10">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                        <input type="text" id="req_org" placeholder="기관명 (예: 서울시청)" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-gray-50/50 focus:bg-white text-sm">
+                        <input type="text" id="req_name" placeholder="담당자 성함" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-gray-50/50 focus:bg-white text-sm">
+                        <input type="tel" id="req_phone" placeholder="연락처 (- 없이 입력)" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-gray-50/50 focus:bg-white text-sm">
+                        <input type="email" id="req_email" placeholder="이메일 주소" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-gray-50/50 focus:bg-white text-sm">
+                    </div>
+                    
+                    <button type="button" onclick="sendProposalRequest()" class="bg-[#00925B] hover:bg-[#007A4B] text-white font-bold text-base md:text-lg px-10 py-4 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                        맞춤 제안서 받기
+                    </button>
+                </form>
             </div>
 
         </div>
@@ -210,52 +205,6 @@
             <!-- grid-cols-5 로 변경하여 5개가 가로로 정렬되게 함 -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
 <!-- BLOG_START -->
-
-            <div class="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full" onclick="window.open('https://blog.naver.com/safe-tytech/224455115535?fromRss=true&trackingCode=rss', '_blank')">
-                <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
-                    <img src="https://wsrv.nl/?url=blogthumb.pstatic.net/MjAyNjEwMjdfMjA3/MDAxNzkzMDYzOTU2MzEz.-KDgmYxx_YnFduVe0Ich1GZ8BjOtCHtAFxoBjdr_dwwg.bfPegWYp1ctLW4Li__eaEv5tm9U_tawLrk4kQtxugL4g.JPEG/20261024_124641.jpg?type=s3" alt="블로그 썸네일" crossorigin="anonymous" referrerpolicy="no-referrer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&w=400&auto=format&fit=crop'">
-                </div>
-                <div class="p-4 flex flex-col flex-grow bg-white">
-                    <p class="text-[11px] text-brand-600 font-bold mb-1">안전택 블로그</p>
-                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">"와! 로이와 함께 가상현실 속으로 안전 여행을 떠나요!" - 서초책있는거리 북캠핑 행사를 사로잡은 어린이들의 몰입도 최강 VR 안전 체험 현장</h3>
-                </div>
-            </div>
-            <div class="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full" onclick="window.open('https://blog.naver.com/safe-tytech/224455070411?fromRss=true&trackingCode=rss', '_blank')">
-                <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
-                    <img src="https://wsrv.nl/?url=blogthumb.pstatic.net/MjAyNjEwMjdfMjYw/MDAxNzkzMDYxMTY4NjMy.N3MHbaVKaUoqNHeNIlJz8r8HaRaN2z49JUcW2OVkV_wg.o_WcPexaLPrynrZrVBVmMI-lwVO7akKEM-6beA5SDFog.JPEG/KakaoTalk_20261026_094700932_02.jpg?type=s3" alt="블로그 썸네일" crossorigin="anonymous" referrerpolicy="no-referrer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&w=400&auto=format&fit=crop'">
-                </div>
-                <div class="p-4 flex flex-col flex-grow bg-white">
-                    <p class="text-[11px] text-brand-600 font-bold mb-1">안전택 블로그</p>
-                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">"와! 로이와 함께 불을 끄고 대피해요!" - 서초구립양재별하어린이집 친구들의 몰입도 최강 VR 화재안전교육 현장</h3>
-                </div>
-            </div>
-            <div class="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full" onclick="window.open('https://blog.naver.com/safe-tytech/224453824999?fromRss=true&trackingCode=rss', '_blank')">
-                <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
-                    <img src="https://wsrv.nl/?url=blogthumb.pstatic.net/MjAyNjEwMjZfMzgg/MDAxNzkyOTc0ODg4Nzgx.92oEpSL8LY1p1qLYKGgG7dlM8heL-a42QRHJnpNzTS0g.rqmCH9s1kXzWx0FPzVAC6beMGQLV3GVrcEQAocvaikgg.JPEG/20261020_102947.jpg?type=s3" alt="블로그 썸네일" crossorigin="anonymous" referrerpolicy="no-referrer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&w=400&auto=format&fit=crop'">
-                </div>
-                <div class="p-4 flex flex-col flex-grow bg-white">
-                    <p class="text-[11px] text-brand-600 font-bold mb-1">안전택 블로그</p>
-                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">"와! 로이와 함께 가상현실 속으로 대피해요!" - 구립서초사랑어린이집 친구들의 몰입도 최강 VR 재난안전교육 현장</h3>
-                </div>
-            </div>
-            <div class="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full" onclick="window.open('https://blog.naver.com/safe-tytech/224451044955?fromRss=true&trackingCode=rss', '_blank')">
-                <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
-                    <img src="https://wsrv.nl/?url=blogthumb.pstatic.net/MjAyNjEwMjNfODkg/MDAxNzkyNzE4OTM2ODQw.xMoSBgaENP8WNqVEmaAgZkvJ75_pwTjAuX90w2nr0iIg.OFC8QJt56l8Iuq-VoJJ05LD97X5_m_JVeWQtXJ943H0g.JPEG/20261020_090357.jpg?type=s3" alt="블로그 썸네일" crossorigin="anonymous" referrerpolicy="no-referrer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&w=400&auto=format&fit=crop'">
-                </div>
-                <div class="p-4 flex flex-col flex-grow bg-white">
-                    <p class="text-[11px] text-brand-600 font-bold mb-1">안전택 블로그</p>
-                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">"와! 가상현실 속에서 재난 탈출을 체험해요!"- 서초구 스마트 건강 체험 행사를 사로잡은 어린이들의 몰입도 최강 VR 안전 체험 현장</h3>
-                </div>
-            </div>
-            <div class="group cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full" onclick="window.open('https://blog.naver.com/safe-tytech/224448630155?fromRss=true&trackingCode=rss', '_blank')">
-                <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
-                    <img src="https://wsrv.nl/?url=blogthumb.pstatic.net/MjAyNjEwMjFfMjIy/MDAxNzkyNTQxNDc0NDc5.rDXnwvFcNtJBg8z2S70-7-sOHXl1h5LgU7j52uOkuvMg.yYlT82g5HBTv5EZAU0ns6gv6QRoq9ZJN0WFpZuPQ0BYg.JPEG/20261014_093552.jpg?type=s3" alt="블로그 썸네일" crossorigin="anonymous" referrerpolicy="no-referrer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&w=400&auto=format&fit=crop'">
-                </div>
-                <div class="p-4 flex flex-col flex-grow bg-white">
-                    <p class="text-[11px] text-brand-600 font-bold mb-1">안전택 블로그</p>
-                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">"와! 폴리와 함께 가상현실 속으로 탈출해요!" - 이천쌀문화축제 '재난탈출! VR 안전체험존'을 사로잡은 아이들의 초집중 현장</h3>
-                </div>
-            </div>
 <!-- BLOG_END -->
             </div>
         </div>
@@ -273,7 +222,6 @@
             <!-- grid-cols-5 로 변경 -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
 <!-- NEWS_START -->
-<!-- 뉴스 API 수집 실패: 401 Client Error: Unauthorized for url: https://openapi.naver.com/v1/search/news.json?query=%EC%95%88%EC%A0%84%ED%83%9D&display=5&sort=date -->
 <!-- NEWS_END -->
             </div>
         </div>
@@ -291,7 +239,6 @@
             <!-- grid-cols-5 로 변경 -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
 <!-- YOUTUBE_START -->
-
 <!-- YOUTUBE_END -->
             </div>
         </div>
@@ -544,34 +491,56 @@
             window.scrollTo({top: y, behavior: 'smooth'});
         }
 
-        // 제안서 폼 디스코드 연동
-        async function submitToDiscord(event) {
-            event.preventDefault();
+        // 💡 통합된 100% 완벽한 제안서 디스코드 통신 엔진
+        function sendProposalRequest() {
+            // 대표님께서 남겨주셨던 고유 웹훅 주소를 새 엔진에 완벽 이식했습니다!
+            const webhookUrl = "https://discord.com/api/webhooks/1562798601095348305/kHEEBTUPtW6HrdCqWPatfu-o0M41XqMl3YL8tJoprUCaOXcRITYs9TOvDAd3f2GMEzG4";
             
-            const orgName = document.getElementById('orgName').value;
-            const managerName = document.getElementById('managerName').value;
-            const contact = document.getElementById('contact').value;
+            const org = document.getElementById("req_org").value;
+            const name = document.getElementById("req_name").value;
+            const phone = document.getElementById("req_phone").value;
+            const email = document.getElementById("req_email").value;
             
-            const webhookUrl = "https://discord.com/api/webhooks/1562798601095348305/kHEEBTUPtW6HrdCqWPatfu-o0M41XqMl3YL8tJoprUCaOXcRITYs9TOvDAd3f2GMEzG4"; 
-
-            const payload = {
-                content: `🚨 **홈페이지 신규 제안서/견적 요청 접수** 🚨\n- **기관명:** ${orgName}\n- **담당자:** ${managerName}\n- **연락처:** ${contact}`
-            };
-
-            try {
-                await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                alert('제안서 요청이 성공적으로 접수되었습니다! 담당자가 확인 후 연락드리겠습니다.');
-                document.getElementById('orgName').value = '';
-                document.getElementById('managerName').value = '';
-                document.getElementById('contact').value = '';
-            } catch (error) {
-                console.error('디스코드 전송 에러:', error);
-                alert('접수 중 일시적인 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.');
+            // 빈칸 검사
+            if(!org || !name || !phone || !email) {
+                alert("모든 정보를 입력해 주세요!");
+                return;
             }
+            
+            // 디스코드로 보낼 메시지 디자인
+            const payload = {
+                content: "🚨 **홈페이지 신규 제안서/견적 요청 접수** 🚨",
+                embeds: [{
+                    color: 37747, // 에메랄드색
+                    fields: [
+                        { name: "🏢 기관명", value: org, inline: true },
+                        { name: "👤 담당자 성함", value: name, inline: true },
+                        { name: "📞 연락처", value: phone, inline: true },
+                        { name: "📧 이메일", value: email, inline: true }
+                    ]
+                }]
+            };
+            
+            // 데이터 쏘기
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            }).then(response => {
+                if(response.ok) {
+                    alert("성공적으로 요청되었습니다! 메니저가 확인 후 신속하게 연락드리겠습니다.");
+                    // 전송 성공 시 입력칸 비우기
+                    document.getElementById("req_org").value = "";
+                    document.getElementById("req_name").value = "";
+                    document.getElementById("req_phone").value = "";
+                    document.getElementById("req_email").value = "";
+                } else {
+                    alert("전송에 실패했습니다. 다시 시도해 주세요.");
+                }
+            }).catch(error => {
+                console.error('디스코드 전송 에러:', error);
+                alert("네트워크 오류가 발생했습니다.");
+            });
         }
     </script>
 </body>
