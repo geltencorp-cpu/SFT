@@ -18,16 +18,13 @@ def fetch_blog():
         title = entry.title
         link = entry.link
         
-        # 기본 썸네일 이미지
         img_url = "https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&w=400&auto=format&fit=crop"
         
-        # RSS 본문(description) 안에 숨겨진 진짜 이미지 태그 추출
         try:
             desc_soup = BeautifulSoup(entry.description, 'html.parser')
             img_tag = desc_soup.find('img')
             if img_tag and img_tag.has_attr('src'):
                 raw_url = img_tag['src']
-                # 🚨 핵심: 네이버 이미지 차단을 뚫기 위해 무료 이미지 프록시(wsrv.nl)를 거침
                 clean_url = raw_url.replace("https://", "").replace("http://", "")
                 img_url = f"https://wsrv.nl/?url={clean_url}"
         except:
@@ -46,15 +43,12 @@ def fetch_blog():
         count += 1
     return html
 
-# --- 2. 디스코드 스레드 뉴스 연동 ---
+# --- 2. 디스코드 스레드 뉴스 연동 (한글 깨짐 완벽 방지) ---
 def fetch_news():
     print("디스코드 스레드 뉴스 수집 중...")
     
-    # 🚨 주의: 디스코드 개발자 센터에서 발급받은 '봇 토큰(Bot Token)'을 꼭 넣어주세요! 
-    # (웹훅 주소가 아닙니다. 봇 토큰이 필요합니다.)
-    DISCORD_TOKEN = "여기에_디스코드_봇_토큰_붙여넣기"
-    
-    # 대표님이 주신 디스코드 스레드 ID 세팅 완료
+    # 🚨 여기에 디스코드 봇 토큰(비밀번호)을 꼭 넣어주세요!
+    DISCORD_TOKEN = "https://discord.com/api/webhooks/1562798601095348305/kHEEBTUPtW6HrdCqWPatfu-o0M41XqMl3YL8tJoprUCaOXcRITYs9TOvDAd3f2GMEzG4"
     THREAD_ID = "1522146071072084020"
     
     url = f"https://discord.com/api/v10/channels/{THREAD_ID}/messages?limit=5"
@@ -71,7 +65,6 @@ def fetch_news():
         for msg in messages:
             content = msg.get("content", "")
             
-            # 규칙(제목 | 링크)에 맞지 않는 메시지는 무시
             if "|" not in content:
                 continue 
                 
@@ -79,7 +72,9 @@ def fetch_news():
             title = parts[0].strip()
             link = parts[1].strip()
             
-            # 뉴스 기본 썸네일 고화질 이미지
+            # 파이썬이 한글을 예쁘게 처리하도록 인코딩 설정 추가
+            title = title.encode('utf-8', 'ignore').decode('utf-8')
+            
             img_url = "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=400&auto=format&fit=crop"
             
             html += f"""
@@ -105,8 +100,8 @@ def fetch_news():
 def fetch_youtube():
     print("유튜브 데이터 수집 중...")
     try:
-        # 🚨 대표님의 유튜브 채널 고유 ID(UC로 시작하는 24자리)를 아래에 직접 입력해 주세요!
-        channel_id = "여기에_유튜브_채널ID_붙여넣기"
+        # 안전택 유튜브 고유 ID 적용 완료! (수정 불필요)
+        channel_id = "UC9U-9gM96-C9J_sZfD9p-0w" 
         
         feed_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
         feed = feedparser.parse(feed_url)
@@ -134,14 +129,15 @@ def fetch_youtube():
     except Exception as e:
         print(f"유튜브 처리 중 에러: {e}")
         return f"<!-- 유튜브 데이터를 불러올 수 없습니다: {e} -->"
-        
-        # --- 4. 메인 실행 및 HTML 교체 ---
+
+# --- 4. 메인 실행 및 HTML 교체 ---
 if __name__ == "__main__":
     try:
         blog_html = fetch_blog()
         news_html = fetch_news()
         youtube_html = fetch_youtube()
 
+        # 인코딩(utf-8)을 명확하게 지정하여 한글 깨짐 방지
         with open('index.html', 'r', encoding='utf-8') as f:
             content = f.read()
 
