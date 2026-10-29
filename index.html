@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>안전 교육 특화 솔루션 | 안전택</title>
+    <!-- 폰트 및 아이콘 로드 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <!-- Tailwind CSS 로드 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#ecfdf5',
+                            100: '#d1fae5',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html { scroll-behavior: smooth; }
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out;
+        }
+        .accordion-content.open {
+            grid-template-rows: 1fr;
+        }
+        .accordion-inner {
+            overflow: hidden;
+        }
+        .arrow-icon {
+            transition: transform 0.3s ease;
+        }
+        .arrow-icon.open {
+            transform: rotate(180deg);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+    <!-- 네비게이션 바 -->
+    <nav class="fixed w-full bg-white/95 backdrop-blur-md shadow-sm z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-28"> 
+                <!-- 상단 로고 영역 -->
+                <div class="flex-shrink-0 flex items-center cursor-pointer h-full py-2" onclick="window.scrollTo(0,0)">
+                    <img src="https://raw.githubusercontent.com/geltencorp-cpu/SFT/1a2dfcaa7c2224b1a6c158f87ebc1101b84c9d68/%EC%95%88%EC%A0%84%ED%83%9D%20%EB%A1%9C%EA%B3%A0new_%EB%8C%80%EC%A7%80%201.png" alt="안전택 로고" class="h-32 md:h-40 w-auto object-contain" onerror="this.outerHTML='<span class=\'text-3xl font-bold text-red-600 tracking-tighter\'>안전택</span>'">
+                </div>
+                <!-- 메인 메뉴 -->
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#proposal" class="text-gray-600 hover:text-brand-600 font-bold transition-colors">맞춤형 제안서</a>
+                    <a href="#blog" class="text-gray-600 hover:text-brand-600 font-bold transition-colors">블로그</a>
+                    <a href="#news" class="text-gray-600 hover:text-brand-600 font-bold transition-colors">뉴스</a>
+                    <a href="#youtube" class="text-gray-600 hover:text-brand-600 font-bold transition-colors">유튜브</a>
+                </div>
+                <!-- 모바일 메뉴 버튼 -->
+                <div class="md:hidden flex items-center">
+                    <button class="text-gray-600 hover:text-gray-900 focus:outline-none">
+                        <i class="ph ph-list text-3xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 메인 히어로 섹션 -->
+    <section class="pt-40 pb-20 lg:pt-52 lg:pb-32 bg-brand-900 overflow-hidden relative">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full border-[40px] border-white"></div>
+            <div class="absolute top-1/2 -left-24 w-64 h-64 rounded-full border-[20px] border-white"></div>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <span class="inline-block py-1 px-3 rounded-full bg-brand-800 text-brand-100 text-sm font-semibold mb-6 border border-brand-700">
+                가장 스마트한 안전 혁명, 실감형 교육 솔루션
+            </span>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6">
+                형식적인 교육을 넘어<br>
+                <span class="text-brand-100">경험을 데이터로 증명하는 안전 솔루션</span>
+            </h1>
+            <p class="mt-4 max-w-2xl text-lg md:text-xl text-gray-300 mx-auto mb-10">
+                어린이부터 어르신, 근로자까지 생애주기별 4대 실감형 교육 프레임워크.<br class="hidden md:block">
+                수요조사부터 결과 보고서까지 완벽한 원스톱(Turn-key) 행정을 제공합니다.
+            </p>
+            <a href="#proposal" class="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-semibold rounded-lg text-brand-900 bg-white hover:bg-gray-100 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                기관별 맞춤 제안서 확인하기
+            </a>
+        </div>
+    </section>
+
+    <!-- 제안서 (타겟 고객) 섹션 -->
+    <section id="proposal" class="py-24 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-brand-600 font-semibold tracking-wide uppercase text-sm mb-2">Customized Proposal</h2>
+                <h3 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">어떤 기관에서 오셨나요?</h3>
+                <p class="text-lg text-gray-600">소속 기관을 선택하시면, 귀 기관에 꼭 맞는 <span class="font-bold text-brand-600">맞춤형 교육 커리큘럼</span>과 <span class="font-bold text-brand-600">핵심 솔루션</span>이 즉시 펼쳐집니다.</p>
+            </div>
+
+            <!-- 타겟 고객 7가지 그리드 (가운데 정렬 및 크기 통일) -->
+            <div class="flex flex-wrap justify-center gap-3 md:gap-4 mb-12">
+                <div class="w-[47%] md:w-[31%] lg:w-[23%] bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all cursor-pointer group text-center" onclick="showProposalForm('학교')">
+                    <i class="ph-fill ph-student text-4xl text-brand-600 mb-3 group-hover:scale-110 transition-transform inline-block"></i>
+                    <h4 class="text-md font-bold text-gray-900">학교</h4>
+                    <p class="text-xs text-gray-500 mt-1 break-keep">초/중/고등학교</p>
+                </div>
+                <div class="w-[47%] md:w-[31%] lg:w-[23%] bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all cursor-pointer group text-center" onclick="showProposalForm('지자체')">
+                    <i class="ph-fill ph-buildings text-4xl text-brand-600 mb-3 group-hover:scale-110 transition-transform inline-block"></i>
+                    <h4 class="text-md font-bold text-gray-900">시/군/구청</h4>
+                    <p class="text-xs text-gray-500 mt-1 break-keep">지방자치단체</p>
+                </div>
+                <div class="w-[47%] md:w-[31%] lg:w-[23%] bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all cursor-pointer group text-center" onclick="showProposalForm('공공안전')">
+                    <i class="ph-fill ph-siren text-4xl text-brand-600 mb-3 group-hover:scale-110 transition-transform inline-block"></i>
+                    <h4 class="text-md font-bold text-gray-900">경찰/소방/보건</h4>
+                    <p class="text-xs text-gray-500 mt-1 break-keep">안전 및 보건 기관</p>
+                </div>
+                <div class="w-[47%] md:w-[31%] lg:w-[23%] bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all cursor-pointer group text-center" onclick="showProposalForm('어르신')">
+                    <i class="ph-fill ph-wheelchair text-4xl text-brand-600 mb-3 group-hover:scale-110 transition-transform inline-block"></i>
+                    <h4 class="text-md font-bold text-gray-900">경로당/복지시설</h4>
+                    <p class="text-xs text-gray-500 mt-1 break-keep">시니어 특화 시설</p>
+                </div>
+                <div class="w-[47%] md:w-[31%] lg:w-[23%] bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all cursor-pointer group text-center" onclick="showProposalForm('어린이')">
+                    <i class="ph-fill ph-baby text-4xl text-brand-600 mb-3 group-hover:scale-110 transition-transform inline-block"></i>
+                    <h4 class="text-md font-bold text-gray-900">어린이 보호시설</h4>
+                    <p class="text-xs text-gray-500 mt-1 break-keep">키움센터/어린이집</p>
+                </div>
+                <div class="w-[47%] md:w-[31%] lg:w-[23%] bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all cursor-pointer group text-center" onclick="showProposalForm('기업')">
+                    <i class="ph-fill ph-briefcase text-4xl text-brand-600 mb-3 group-hover:scale-110 transition-transform inline-block"></i>
+                    <h4 class="text-md font-bold text-gray-900">일반회사/단체</h4>
+                    <p class="text-xs text-gray-500 mt-1 break-keep">근로자 산업안전</p>
+                </div>
+                <div class="w-[47%] md:w-[31%] lg:w-[23%] bg-white rounded-xl p-5 shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all cursor-pointer group text-center" onclick="showProposalForm('행사')">
+                    <i class="ph-fill ph-tent text-4xl text-brand-600 mb-3 group-hover:scale-110 transition-transform inline-block"></i>
+                    <h4 class="text-md font-bold text-gray-900">행사/렌탈/기타</h4>
+                    <p class="text-xs text-gray-500 mt-1 break-keep">야외 부스 및 대여</p>
+                </div>
+            </div>
+
+            <!-- 동적으로 내용이 채워질 제안서 영역 -->
+            <div id="proposal-content-area" class="hidden mb-12">
+                <!-- 자바스크립트가 여기에 HTML을 삽입합니다 -->
+            </div>
+
+            <!-- 💡 통합된 완벽한 폼 영역 (아이디 부여, 클릭 이벤트 연결 완료) -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 md:p-10 relative overflow-hidden text-center max-w-5xl mx-auto mt-12">
+                <div class="absolute top-0 right-0 opacity-5 pointer-events-none transform translate-x-1/4 -translate-y-1/4">
+                    <i class="ph-fill ph-envelope-simple text-9xl"></i>
+                </div>
+                
+                <div class="relative z-10 mb-8">
+                    <h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3">상세 제안서 및 견적 요청하기</h2>
+                    <p class="text-gray-600 text-sm md:text-base break-keep">아래 정보를 남겨주시면, 메니저가 확인 후 보안 처리된 맞춤형 제안서 링크를 신속하게 보내드립니다.</p>
+                </div>
+                
+                <form class="max-w-5xl mx-auto relative z-10">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                        <input type="text" id="req_org" placeholder="기관명 (예: 서울시청)" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-gray-50/50 focus:bg-white text-sm">
+                        <input type="text" id="req_name" placeholder="담당자 성함" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-gray-50/50 focus:bg-white text-sm">
+                        <input type="tel" id="req_phone" placeholder="연락처 (- 없이 입력)" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-gray-50/50 focus:bg-white text-sm">
+                        <input type="email" id="req_email" placeholder="이메일 주소" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-gray-50/50 focus:bg-white text-sm">
+                    </div>
+                    
+                    <button type="button" onclick="sendProposalRequest()" class="bg-[#00925B] hover:bg-[#007A4B] text-white font-bold text-base md:text-lg px-10 py-4 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">
+                        맞춤 제안서 받기
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- 블로그 섹션 -->
+    <section id="blog" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="relative mb-10 text-center flex items-center justify-center">
+                <h2 class="text-3xl font-bold text-gray-900">안전택 <span class="text-brand-600">블로그</span></h2>
+                <div class="absolute right-0">
+                    <a href="https://blog.naver.com/safe-tytech" target="_blank" class="text-sm font-semibold text-brand-600 hover:text-brand-800">전체보기 &rarr;</a>
+                </div>
+            </div>
+            <!-- grid-cols-5 로 변경하여 5개가 가로로 정렬되게 함 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+<!-- BLOG_START -->
+
+            <a href="https://blog.naver.com/safe-tytech/224455115535?fromRss=true&amp;trackingCode=rss" target="_blank" rel="noopener noreferrer" class="group block cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full">
+                <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
+                    <img src="assets/blog/224455115535.jpg" alt="블로그 썸네일" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&amp;w=400&amp;auto=format&amp;fit=crop'">
+                    
+                </div>
+                <div class="p-4 flex flex-col flex-grow bg-white">
+                    <p class="text-[11px] text-brand-600 font-bold mb-1">안전택 블로그</p>
+                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">&quot;와! 로이와 함께 가상현실 속으로 안전 여행을 떠나요!&quot; - 서초책있는거리 북캠핑 행사를 사로잡은 어린이들의 몰입도 최강 VR 안전 체험 현장</h3>
+                </div>
+            </a>
+            <a href="https://blog.naver.com/safe-tytech/224455070411?fromRss=true&amp;trackingCode=rss" target="_blank" rel="noopener noreferrer" class="group block cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full">
+                <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
+                    <img src="assets/blog/224455070411.jpg" alt="블로그 썸네일" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&amp;w=400&amp;auto=format&amp;fit=crop'">
+                    
+                </div>
+                <div class="p-4 flex flex-col flex-grow bg-white">
+                    <p class="text-[11px] text-brand-600 font-bold mb-1">안전택 블로그</p>
+                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">&quot;와! 로이와 함께 불을 끄고 대피해요!&quot; - 서초구립양재별하어린이집 친구들의 몰입도 최강 VR 화재안전교육 현장</h3>
+                </div>
+            </a>
+            <a href="https://blog.naver.com/safe-tytech/224453824999?fromRss=true&amp;trackingCode=rss" target="_blank" rel="noopener noreferrer" class="group block cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full">
+                <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
+                    <img src="assets/blog/224453824999.jpg" alt="블로그 썸네일" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&amp;w=400&amp;auto=format&amp;fit=crop'">
+                    
+                </div>
+                <div class="p-4 flex flex-col flex-grow bg-white">
+                    <p class="text-[11px] text-brand-600 font-bold mb-1">안전택 블로그</p>
+                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">&quot;와! 로이와 함께 가상현실 속으로 대피해요!&quot; - 구립서초사랑어린이집 친구들의 몰입도 최강 VR 재난안전교육 현장</h3>
+                </div>
+            </a>
+            <a href="https://blog.naver.com/safe-tytech/224451044955?fromRss=true&amp;trackingCode=rss" target="_blank" rel="noopener noreferrer" class="group block cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full">
+                <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
+                    <img src="assets/blog/224451044955.jpg" alt="블로그 썸네일" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&amp;w=400&amp;auto=format&amp;fit=crop'">
+                    
+                </div>
+                <div class="p-4 flex flex-col flex-grow bg-white">
+                    <p class="text-[11px] text-brand-600 font-bold mb-1">안전택 블로그</p>
+                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">&quot;와! 가상현실 속에서 재난 탈출을 체험해요!&quot;- 서초구 스마트 건강 체험 행사를 사로잡은 어린이들의 몰입도 최강 VR 안전 체험 현장</h3>
+                </div>
+            </a>
+            <a href="https://blog.naver.com/safe-tytech/224448630155?fromRss=true&amp;trackingCode=rss" target="_blank" rel="noopener noreferrer" class="group block cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full">
+                <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
+                    <img src="assets/blog/224448630155.jpg" alt="블로그 썸네일" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1432821596592-e2c18b78144f?q=80&amp;w=400&amp;auto=format&amp;fit=crop'">
+                    
+                </div>
+                <div class="p-4 flex flex-col flex-grow bg-white">
+                    <p class="text-[11px] text-brand-600 font-bold mb-1">안전택 블로그</p>
+                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">&quot;와! 폴리와 함께 가상현실 속으로 탈출해요!&quot; - 이천쌀문화축제 &#x27;재난탈출! VR 안전체험존&#x27;을 사로잡은 아이들의 초집중 현장</h3>
+                </div>
+            </a>
+<!-- BLOG_END -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 뉴스 섹션 -->
+    <section id="news" class="py-20 bg-gray-50 border-t border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="relative mb-10 text-center flex items-center justify-center">
+                <h2 class="text-3xl font-bold text-gray-900">안전택 <span class="text-brand-600">뉴스</span></h2>
+                <div class="absolute right-0">
+                    <a href="https://search.naver.com/search.naver?where=news&query=%EC%95%88%EC%A0%84%ED%83%9D" target="_blank" class="text-sm font-semibold text-brand-600 hover:text-brand-800">전체보기 &rarr;</a>
+                </div>
+            </div>
+            <!-- grid-cols-5 로 변경 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+<!-- NEWS_START -->
+
+            <a href="https://www.thepowernews.co.kr/view.php?ud=2025091910361299549aeda69934_7" target="_blank" rel="noopener noreferrer" class="group block cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full">
+                <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
+                    <img src="https://wsrv.nl/?url=cliimage.commutil.kr%2Fphpwas%2Frestmb_allidxmake.php%3Fpp%3D002%26idx%3D999%26simg%3D20250919103811051949aeda6993417521136223.jpg%26nmt%3D7" alt="뉴스 썸네일" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&amp;w=400&amp;auto=format&amp;fit=crop'">
+                    
+                </div>
+                <div class="p-4 flex flex-col flex-grow bg-white">
+                    <p class="text-[11px] text-brand-600 font-bold mb-1">안전택 소식</p>
+                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">안전택, 경상남도 안전체험관에 ‘XR 안전교육 시...</h3>
+                </div>
+            </a>
+            <a href="https://www.globalepic.co.kr/view.php?ud=2025102316552953789aeda69934_29" target="_blank" rel="noopener noreferrer" class="group block cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full">
+                <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
+                    <img src="https://wsrv.nl/?url=cgeimage.commutil.kr%2Fphpwas%2Frestmb_allidxmake.php%3Fpp%3D002%26idx%3D999%26simg%3D20251023165543075539aeda6993417521136223.jpg%26nmt%3D29" alt="뉴스 썸네일" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&amp;w=400&amp;auto=format&amp;fit=crop'">
+                    
+                </div>
+                <div class="p-4 flex flex-col flex-grow bg-white">
+                    <p class="text-[11px] text-brand-600 font-bold mb-1">안전택 소식</p>
+                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">안전택, 김해어린이교통공원에 ‘AI 기반 교통안전...</h3>
+                </div>
+            </a>
+            <a href="https://www.hcsinmoon.co.kr/news/articleView.html?idxno=71811" target="_blank" rel="noopener noreferrer" class="group block cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full">
+                <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
+                    <img src="https://wsrv.nl/?url=cdn.hcsinmoon.co.kr%2Fnews%2Fthumbnail%2F202411%2F71811_78979_219_v150.jpg" alt="뉴스 썸네일" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&amp;w=400&amp;auto=format&amp;fit=crop'">
+                    
+                </div>
+                <div class="p-4 flex flex-col flex-grow bg-white">
+                    <p class="text-[11px] text-brand-600 font-bold mb-1">안전택 소식</p>
+                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">찾아가는 어린이 안전 VR 체험교육</h3>
+                </div>
+            </a>
+            <a href="http://www.newsnnewstv.com/news/view.php?no=99712" target="_blank" rel="noopener noreferrer" class="group block cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full">
+                <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
+                    <img src="https://wsrv.nl/?url=www.newsnnewstv.com%2Fdata%2Fnews%2F2511%2F9ee08fd44be2fe0ed3a06fbf545e88f3_8I9xSvp4nJ229x2Zgme.jpg" alt="뉴스 썸네일" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&amp;w=400&amp;auto=format&amp;fit=crop'">
+                    
+                </div>
+                <div class="p-4 flex flex-col flex-grow bg-white">
+                    <p class="text-[11px] text-brand-600 font-bold mb-1">안전택 소식</p>
+                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">이천시, 가상현실(VR) 안전 체험 통한 어린이 생활...</h3>
+                </div>
+            </a>
+            <a href="https://www.cnbizm.com/news/articleView.html?idxno=196535" target="_blank" rel="noopener noreferrer" class="group block cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-brand-500 transition-all overflow-hidden flex flex-col h-full">
+                <div class="w-full aspect-video bg-gray-100 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
+                    <img src="https://wsrv.nl/?url=cdn.cnbizm.com%2Fnews%2Fphoto%2F202511%2F196535_1_2151.jpg" alt="뉴스 썸네일" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&amp;w=400&amp;auto=format&amp;fit=crop'">
+                    
+                </div>
+                <div class="p-4 flex flex-col flex-grow bg-white">
+                    <p class="text-[11px] text-brand-600 font-bold mb-1">안전택 소식</p>
+                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">성북구, ‘찾아가는 교통안전교육’으로 79개소 2...</h3>
+                </div>
+            </a>
+<!-- NEWS_END -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 유튜브 섹션 -->
+    <section id="youtube" class="py-20 bg-white border-t border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="relative mb-10 text-center flex items-center justify-center">
+                <h2 class="text-3xl font-bold text-gray-900">안전택 <span class="text-red-600">유튜브</span></h2>
+                <div class="absolute right-0">
+                    <a href="https://www.youtube.com/@safetytech_official/videos" target="_blank" class="text-sm font-semibold text-red-600 hover:text-red-800">전체보기 &rarr;</a>
+                </div>
+            </div>
+            <!-- grid-cols-5 로 변경 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+<!-- YOUTUBE_START -->
+
+            <a href="https://www.youtube.com/watch?v=6H-WfQsu5cg" target="_blank" rel="noopener noreferrer" class="group block cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-red-500 transition-all overflow-hidden flex flex-col h-full">
+                <div class="w-full aspect-video bg-gray-900 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
+                    <img src="https://i.ytimg.com/vi/6H-WfQsu5cg/hqdefault.jpg" alt="유튜브 썸네일" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/6H-WfQsu5cg/hqdefault.jpg'">
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none"><i class="ph-fill ph-play-circle text-5xl text-white opacity-90 group-hover:scale-110 transition-transform"></i></div>
+                </div>
+                <div class="p-4 flex flex-col flex-grow bg-white">
+                    <p class="text-[11px] text-red-600 font-bold mb-1">안전택 유튜브</p>
+                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-red-600 transition-colors line-clamp-2 leading-snug">서리풀뮤직페스티벌 어린이 VR 안전체험 부스 | 행동 데이터 분석·AI 리포트까지 #VR안전교육</h3>
+                </div>
+            </a>
+            <a href="https://www.youtube.com/watch?v=WOpxBg8VI7Q" target="_blank" rel="noopener noreferrer" class="group block cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-red-500 transition-all overflow-hidden flex flex-col h-full">
+                <div class="w-full aspect-video bg-gray-900 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
+                    <img src="https://i.ytimg.com/vi/WOpxBg8VI7Q/hqdefault.jpg" alt="유튜브 썸네일" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/WOpxBg8VI7Q/hqdefault.jpg'">
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none"><i class="ph-fill ph-play-circle text-5xl text-white opacity-90 group-hover:scale-110 transition-transform"></i></div>
+                </div>
+                <div class="p-4 flex flex-col flex-grow bg-white">
+                    <p class="text-[11px] text-red-600 font-bold mb-1">안전택 유튜브</p>
+                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-red-600 transition-colors line-clamp-2 leading-snug">서리풀뮤직페스티벌 어린이 VR 안전체험 부스 | 행동 데이터 분석·AI 리포트까지 #VR안전교육</h3>
+                </div>
+            </a>
+            <a href="https://www.youtube.com/watch?v=PBj1gD4dEA8" target="_blank" rel="noopener noreferrer" class="group block cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-red-500 transition-all overflow-hidden flex flex-col h-full">
+                <div class="w-full aspect-video bg-gray-900 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
+                    <img src="https://i.ytimg.com/vi/PBj1gD4dEA8/hqdefault.jpg" alt="유튜브 썸네일" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/PBj1gD4dEA8/hqdefault.jpg'">
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none"><i class="ph-fill ph-play-circle text-5xl text-white opacity-90 group-hover:scale-110 transition-transform"></i></div>
+                </div>
+                <div class="p-4 flex flex-col flex-grow bg-white">
+                    <p class="text-[11px] text-red-600 font-bold mb-1">안전택 유튜브</p>
+                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-red-600 transition-colors line-clamp-2 leading-snug">VR로 만나는 실감나는 소방 안전체험! [서초 책있는거리 북캠핑] 어린이 안전체험관 현장으로! 🚒✨</h3>
+                </div>
+            </a>
+            <a href="https://www.youtube.com/watch?v=XXvqbbeO0eI" target="_blank" rel="noopener noreferrer" class="group block cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-red-500 transition-all overflow-hidden flex flex-col h-full">
+                <div class="w-full aspect-video bg-gray-900 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
+                    <img src="https://i.ytimg.com/vi/XXvqbbeO0eI/hqdefault.jpg" alt="유튜브 썸네일" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/XXvqbbeO0eI/hqdefault.jpg'">
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none"><i class="ph-fill ph-play-circle text-5xl text-white opacity-90 group-hover:scale-110 transition-transform"></i></div>
+                </div>
+                <div class="p-4 flex flex-col flex-grow bg-white">
+                    <p class="text-[11px] text-red-600 font-bold mb-1">안전택 유튜브</p>
+                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-red-600 transition-colors line-clamp-2 leading-snug">어린이 VR안전교육 [서초구립양재별하어린이집] 찾아가는 VR안전교육 안전택</h3>
+                </div>
+            </a>
+            <a href="https://www.youtube.com/watch?v=NAJfPuHuQ0I" target="_blank" rel="noopener noreferrer" class="group block cursor-pointer bg-white rounded-xl shadow-sm border border-gray-200 hover:shadow-md hover:border-red-500 transition-all overflow-hidden flex flex-col h-full">
+                <div class="w-full aspect-video bg-gray-900 flex items-center justify-center flex-shrink-0 relative overflow-hidden border-b border-gray-100">
+                    <img src="https://i.ytimg.com/vi/NAJfPuHuQ0I/hqdefault.jpg" alt="유튜브 썸네일" loading="lazy" referrerpolicy="no-referrer" class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/NAJfPuHuQ0I/hqdefault.jpg'">
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none"><i class="ph-fill ph-play-circle text-5xl text-white opacity-90 group-hover:scale-110 transition-transform"></i></div>
+                </div>
+                <div class="p-4 flex flex-col flex-grow bg-white">
+                    <p class="text-[11px] text-red-600 font-bold mb-1">안전택 유튜브</p>
+                    <h3 class="text-sm font-bold text-gray-900 group-hover:text-red-600 transition-colors line-clamp-2 leading-snug">어린이 VR안전교육 [서초사랑어린이집] 찾아가는 VR안전교육 안전택</h3>
+                </div>
+            </a>
+<!-- YOUTUBE_END -->
+            </div>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="bg-gray-900 text-gray-400 py-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center md:items-start">
+                <div class="mb-8 md:mb-0">
+                    <img src="https://raw.githubusercontent.com/geltencorp-cpu/SFT/1a2dfcaa7c2224b1a6c158f87ebc1101b84c9d68/%EC%95%88%EC%A0%84%ED%83%9D%20%EB%A1%9C%EA%B3%A0new_%EB%8C%80%EC%A7%80%201.png" alt="안전택 로고" class="h-24 md:h-32 w-auto object-contain grayscale opacity-70 mb-4" onerror="this.outerHTML='<span class=\'text-2xl font-bold text-gray-500 tracking-tighter block mb-4\'>안전택</span>'">
+                    <p class="text-sm">가장 스마트한 안전 혁명, 실감형 교육 솔루션</p>
+                </div>
+                <div class="text-sm text-center md:text-right space-y-2">
+                    <p><strong class="text-gray-300">상호:</strong> 안전택 | <strong class="text-gray-300">대표자:</strong> 임지원</p>
+                    <p><strong class="text-gray-300">사업자등록번호:</strong> 873-08-03323</p>
+                    <p><strong class="text-gray-300">사업장 주소:</strong> 경기도 성남시 분당구 대왕판교로645번길 12, 7층 7호 (경기창조경제혁신센터)</p>
+                    <p><strong class="text-gray-300">대표번호:</strong> 031-698-4349</p>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-800 text-center text-xs">
+                <p>&copy; 2024 안전택 (Safety Tech). All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 자바스크립트 -->
+    <script>
+        // 제안서 내 커리큘럼 아이템 비디오 토글
+        function toggleCurriculumVideo(index) {
+            const content = document.getElementById('curr-video-' + index);
+            const arrow = document.getElementById('curr-arrow-' + index);
+            content.classList.toggle('open');
+            arrow.classList.toggle('open');
+        }
+
+        // 제안서 데이터베이스
+        const proposalData = {
+            '학교': {
+                title: '학교 (초/중/고) 맞춤형 제안',
+                subtitle: '학생들의 참여도를 극대화하는 실감형 안전교육과 완벽한 행정 지원',
+                tag: '학교/교육청 전용',
+                advantages: [
+                    { icon: 'ph-heart', title: '압도적인 아이들 만족도', desc: '아이들이 즐겁게 몰입할 수 있는 게임형/실감형 콘텐츠로 학습 효과를 극대화합니다.' },
+                    { icon: 'ph-chalkboard-teacher', title: '이론과 실습 동시 진행', desc: '검증된 이론 교육과 몸이 기억하는 교구/VR 실습을 결합하여 더욱 알찬 교육을 제공합니다.' },
+                    { icon: 'ph-coins', title: '합리적인 예산과 견적', desc: '학교의 한정된 예산에 맞춰 콘텐츠, 강사, 기기 렌탈을 최적화한 유연한 맞춤 견적 제공' }
+                ],
+                infoBlock: `
+                    <div class="bg-brand-50 border border-brand-200 rounded-xl p-6 mb-10 text-left">
+                        <h5 class="text-brand-800 font-bold mb-3"><i class="ph-fill ph-info text-xl mr-1 align-text-bottom"></i> 학교 의무 안전교육 이수 규정</h5>
+                        <ul class="text-sm text-brand-900 space-y-2">
+                            <li><strong>학생:</strong> 7대 안전 영역 연간 51차시 이상 필수 이수 (생활, 교통, 폭력예방, 약물중독, 재난, 직업, 응급처치)</li>
+                            <li><strong>교직원:</strong> 일반 교직원 3년 이내 15시간 이상 / 기한부 근로자(3년 미만) 6개월마다 2시간 이상 필수 이수</li>
+                        </ul>
+                    </div>
+                `,
+                curriculum: [
+                    { icon: 'ph-student', title: '어린이 XR 안전교육 (초저)', desc: '로보카폴리 IP 활용 100% 몰입형 교통, 소방, 생활안전, 유괴방지 VR 체험', videoId: '' },
+                    { icon: 'ph-device-mobile-camera', title: '스몸비 및 사이버 폭력 예방 (초고/중/고)', desc: '스마트폰 보행 위험성 체험, 딥페이크 및 사이버 폭력 대처 방법', videoId: '' },
+                    { icon: 'ph-bicycle', title: '개인형 이동장치 (PM) 안전', desc: '자전거, 전동 킥보드 안전 수칙 및 VR 모의 주행 실습', videoId: '' },
+                    { icon: 'ph-first-aid', title: '몸으로 기억하는 CPR 및 대피 실습', desc: '교육용 소화기 분사, 인체 무해 연기 화재 대피, 지진 대피 훈련', videoId: '' }
+                ]
+            },
+            '지자체': {
+                title: '시/군/구청 맞춤형 제안',
+                subtitle: '우리 지역 안전 취약점을 파악하고 차기 예산 근거를 마련하는 데이터 솔루션',
+                tag: '지자체/관공서 전용',
+                advantages: [
+                    { icon: 'ph-files', title: '행정 업무 ZERO', desc: '수요조사부터 만족도, 결과보고, 완료계 발급까지 100% 턴키 대행' },
+                    { icon: 'ph-chalkboard-teacher', title: '4대 교육 프레임워크', desc: 'VR 체험형, 교구 체험형, 태블릿 디지털형, 강사 파견형 맞춤 설계' },
+                    { icon: 'ph-chart-line-up', title: 'AI 행동 데이터 리포트', desc: '56가지 바이오마커 및 안전 MBTI 기반의 객관적 성과 증명 자료 제공' }
+                ],
+                curriculum: [
+                    { icon: 'ph-chart-bar', title: '지자체 맞춤형 종합 평가 리포트', desc: '전국 지자체 평균 데이터베이스와 우리 관내 안전 점수 비교 분석', videoId: '' },
+                    { icon: 'ph-cloud-warning', title: '기후성 재난 및 다중밀집 안전', desc: '태풍, 홍수, 폭염, 한파 대처 및 이태원 참사 예방 다중밀집 대피 훈련', videoId: '' },
+                    { icon: 'ph-users-three', title: '지역 주민 대상 생애주기 안전교실', desc: '어린이부터 어르신까지 모든 세대를 아우르는 맞춤형 안전 프레임워크 제공', videoId: '' },
+                    { icon: 'ph-tent', title: '야외 행사 부스형 교육 지원', desc: '지역 축제 및 행사에 맞춘 VR 부스 및 안전 체험존 기획 및 세팅', videoId: '' }
+                ]
+            },
+            '공공안전': {
+                title: '경찰/소방/보건소 맞춤형 제안',
+                subtitle: '공공 안전 목표 달성을 위한 전문적이고 체계적인 실습·이론 융합 교육',
+                tag: '경찰/소방/보건 전용',
+                advantages: [
+                    { icon: 'ph-files', title: '행정 업무 ZERO', desc: '수요조사부터 만족도, 결과보고, 완료계 발급까지 100% 턴키 대행' },
+                    { icon: 'ph-chalkboard-teacher', title: '4대 교육 프레임워크', desc: 'VR 체험형, 교구 체험형, 태블릿 디지털형, 강사 파견형 맞춤 설계' },
+                    { icon: 'ph-chart-line-up', title: 'AI 행동 데이터 리포트', desc: '56가지 바이오마커 및 안전 MBTI 기반의 객관적 성과 증명 자료 제공' }
+                ],
+                curriculum: [
+                    { icon: 'ph-siren', title: 'VR 화재/지진 대피 및 소화기 실습', desc: '로이와 함께하는 VR 소방안전 및 시뮬레이터 기반 실전 생존 근육 훈련', videoId: '' },
+                    { icon: 'ph-shield-warning', title: '신변 안전 및 범죄 예방 교육', desc: '폭력·성폭력(딥페이크 포함) 안전, 마약·도박 중독 예방 및 대처법', videoId: '' },
+                    { icon: 'ph-heartbeat', title: '보건 안전 및 심폐소생술(CPR)', desc: '심폐소생술(AED), 감염병 안전, 자살예방 및 응급구조 전문 강사 파견', videoId: '' },
+                    { icon: 'ph-brain', title: '56가지 바이오마커 AI 분석', desc: '위기 대처 능력, 인지 속도, 문제 해결력을 분석하여 규범과 실제 행동의 괴리 파악', videoId: '' }
+                ]
+            },
+            '어르신': {
+                title: '경로당 및 어르신 복지시설 제안',
+                subtitle: '어르신의 생활 문제를 직접 해결하는 찾아가는 디지털·안전 교실',
+                tag: '시니어 특화',
+                advantages: [
+                    { icon: 'ph-files', title: '행정 업무 ZERO', desc: '수요조사부터 만족도, 결과보고, 완료계 발급까지 100% 턴키 대행' },
+                    { icon: 'ph-chalkboard-teacher', title: '4대 교육 프레임워크', desc: 'VR 체험형, 교구 체험형, 태블릿 디지털형, 강사 파견형 맞춤 설계' },
+                    { icon: 'ph-chart-line-up', title: 'AI 행동 데이터 리포트', desc: '56가지 바이오마커 및 안전 MBTI 기반의 객관적 성과 증명 자료 제공' }
+                ],
+                curriculum: [
+                    { icon: 'ph-device-tablet', title: '태블릿 기반 키오스크 & 스마트폰 적응', desc: '큰 글씨, 단순한 UI로 카페 주문, 스마트폰 조작 등 실생활 디지털 자신감 부여', videoId: '' },
+                    { icon: 'ph-phone-disconnect', title: '보이스피싱 및 금융 사기 예방', desc: '가족 사칭, 스미싱 링크 차단 등 진화하는 사기 수법 대처 요령 학습', videoId: '' },
+                    { icon: 'ph-thermometer', title: '계절별 안전 (혹서기/혹한기)', desc: '온열 질환, 한랭 질환 예방 및 낙상, 전기/가스 화재 예방 수칙', videoId: '' },
+                    { icon: 'ph-brain', title: '뇌 건강 테스트 (콤마인드)', desc: 'VR 기반 인지 정도 정밀 분석, 조기 치매 예측 및 맞춤형 인지 개선 솔루션', videoId: '' }
+                ]
+            },
+            '어린이': {
+                title: '어린이 보호시설 (키움센터/어린이집)',
+                subtitle: '로보카폴리와 함께 놀이처럼 배우고 AI로 아이의 정서까지 체크하는 교육',
+                tag: '영유아/아동 특화',
+                advantages: [
+                    { icon: 'ph-files', title: '행정 업무 ZERO', desc: '수요조사부터 만족도, 결과보고, 완료계 발급까지 100% 턴키 대행' },
+                    { icon: 'ph-chalkboard-teacher', title: '4대 교육 프레임워크', desc: 'VR 체험형, 교구 체험형, 태블릿 디지털형, 강사 파견형 맞춤 설계' },
+                    { icon: 'ph-chart-line-up', title: 'AI 행동 데이터 리포트', desc: '56가지 바이오마커 및 안전 MBTI 기반의 객관적 성과 증명 자료 제공' }
+                ],
+                curriculum: [
+                    { icon: 'ph-car-profile', title: '폴리와 함께하는 VR 교통안전', desc: '올바른 신호등 학습, 횡단보도 건너기 실습으로 보행 안전 의식 확립', videoId: '' },
+                    { icon: 'ph-fire', title: '로이와 함께하는 VR 소방/재난안전', desc: '화재 대피 요령, 지진 발생 시 행동 요령을 가상 현실에서 안전하게 체험', videoId: '' },
+                    { icon: 'ph-first-aid', title: '엠버와 함께하는 VR 생활안전', desc: '승강기 멈춤 사고 대처, 불량 식품 피하기, 실종 및 유괴 방지 교육', videoId: '' },
+                    { icon: 'ph-chart-polar', title: '어린이 심리/정서 분석 리포트', desc: 'VR 체험 중 발생하는 무의식 데이터를 분석해 불안, 충동성 등 정서 상태 진단', videoId: '' }
+                ]
+            },
+            '기업': {
+                title: '일반회사 및 근로자 단체 제안',
+                subtitle: '중대재해처벌법 대비, 근로자의 생명을 지키는 25종+ 산업안전 특화 솔루션',
+                tag: 'B2B/산업안전',
+                advantages: [
+                    { icon: 'ph-files', title: '행정 업무 ZERO', desc: '수요조사부터 만족도, 결과보고, 완료계 발급까지 100% 턴키 대행' },
+                    { icon: 'ph-chalkboard-teacher', title: '4대 교육 프레임워크', desc: 'VR 체험형, 교구 체험형, 태블릿 디지털형, 강사 파견형 맞춤 설계' },
+                    { icon: 'ph-chart-line-up', title: 'AI 행동 데이터 리포트', desc: '56가지 바이오마커 및 안전 MBTI 기반의 객관적 성과 증명 자료 제공' }
+                ],
+                curriculum: [
+                    { icon: 'ph-hard-hat', title: '고위험 작업 VR 안전 훈련', desc: '밀폐공간 질식재해, 건설업 강관비계 추락, 예초 조경작업 재해 예방 체험', videoId: '' },
+                    { icon: 'ph-wheelchair', title: '근골격계 부담 작업 및 직장 내 안전', desc: '근골격계 질환 예방 스트레칭, 급식시설 조리실 재해사례 등 서비스업 안전', videoId: '' },
+                    { icon: 'ph-chalkboard-teacher', title: '법정 의무 안전교육 전문가 파견', desc: '중대재해처벌법 해설, 산업안전보건교육 등 현장 경험이 풍부한 전문 강사 파견', videoId: '' },
+                    { icon: 'ph-shield-check', title: '스마트 산업안전 원스톱 토탈 관리 (App)', desc: '근로계약서, 출퇴근, AI 사고 예측, ISO 45001 문서 관리를 지원하는 기업용 앱', videoId: '' }
+                ]
+            },
+            '행사': {
+                title: '행사 및 부스 렌탈 제안',
+                subtitle: '대규모 인원 수용과 유연한 장비 세팅으로 행사의 품격을 높이는 안전 체험존',
+                tag: '행사/축제 전용',
+                advantages: [
+                    { icon: 'ph-files', title: '행정 업무 ZERO', desc: '수요조사부터 만족도, 결과보고, 완료계 발급까지 100% 턴키 대행' },
+                    { icon: 'ph-chalkboard-teacher', title: '4대 교육 프레임워크', desc: 'VR 체험형, 교구 체험형, 태블릿 디지털형, 강사 파견형 맞춤 설계' },
+                    { icon: 'ph-chart-line-up', title: 'AI 행동 데이터 리포트', desc: '56가지 바이오마커 및 안전 MBTI 기반의 객관적 성과 증명 자료 제공' }
+                ],
+                curriculum: [
+                    { icon: 'ph-users-four', title: '대규모 체육관/강당형 동시 진행', desc: '다수의 인원이 동시에 참여하는 인터랙티브 게이미피케이션 학습 지원', videoId: '' },
+                    { icon: 'ph-tent', title: '야외 행사 부스형 체험존 기획', desc: '지자체 축제, 진로 박람회 등 현장 상황에 맞춘 유연한 VR 및 교구 부스 세팅', videoId: '' },
+                    { icon: 'ph-handshake', title: '장비 단기 렌탈 및 파견 운영', desc: '고가의 장비 구매 부담 없이 합리적인 가격으로 VR 기기 및 교구 단기 렌탈 가능', videoId: '' },
+                    { icon: 'ph-camera', title: '참여자 몰입도 극대화 이벤트', desc: '로보카폴리 포토존 운영, 기프티콘(쿠폰) 리워드 제공으로 참여자 만족도 100% 달성', videoId: '' }
+                ]
+            }
+        };
+
+        // 제안서 폼 표시 함수
+        function showProposalForm(category) {
+            const area = document.getElementById('proposal-content-area');
+            const data = proposalData[category];
+            
+            if (!data) return;
+
+            let advantagesHtml = '';
+            data.advantages.forEach(adv => {
+                advantagesHtml += `
+                    <div class="bg-brand-50/50 p-5 rounded-2xl">
+                        <i class="ph-fill ${adv.icon} text-3xl text-brand-600 mb-2"></i>
+                        <h4 class="font-bold text-gray-900 mb-1">${adv.title}</h4>
+                        <p class="text-sm text-gray-600">${adv.desc}</p>
+                    </div>
+                `;
+            });
+
+            let curriculumHtml = '';
+            data.curriculum.forEach((item, index) => {
+                const videoEmbed = item.videoId 
+                    ? `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${item.videoId}" title="${item.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+                    : `<div class="absolute top-0 left-0 w-full h-full bg-slate-800 flex items-center justify-center text-gray-400">▶ 영상 준비 중입니다</div>`;
+
+                curriculumHtml += `
+                    <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:border-brand-400 transition-colors mb-4">
+                        <button onclick="toggleCurriculumVideo('${category}-${index}')" class="w-full px-6 py-5 flex items-center justify-between bg-white hover:bg-gray-50 transition-colors focus:outline-none text-left">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center flex-shrink-0 mr-4">
+                                    <i class="ph-fill ${item.icon} text-xl text-brand-600"></i>
+                                </div>
+                                <h5 class="text-lg font-bold text-gray-900">${item.title}</h5>
+                            </div>
+                            <i id="curr-arrow-${category}-${index}" class="ph-bold ph-caret-down text-xl text-gray-400 arrow-icon"></i>
+                        </button>
+                        
+                        <div id="curr-video-${category}-${index}" class="accordion-content bg-slate-50">
+                            <div class="accordion-inner px-6 py-6 border-t border-gray-100">
+                                <div class="relative w-full overflow-hidden rounded-xl mb-4 shadow-inner" style="padding-top: 56.25%;">
+                                    ${videoEmbed}
+                                </div>
+                                <p class="text-gray-700 font-medium">${item.desc}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            let html = `
+                <div class="bg-white rounded-3xl p-8 md:p-12 shadow-xl border border-gray-100 fade-in relative overflow-hidden text-left">
+                    <div class="absolute top-0 right-0 -mt-16 -mr-16 text-brand-50 opacity-50 pointer-events-none">
+                        <i class="ph-fill ph-shield-check text-[200px]"></i>
+                    </div>
+
+                    <div class="relative z-10">
+                        <span class="inline-block py-1 px-3 rounded-full bg-brand-100 text-brand-700 text-sm font-bold mb-4">
+                            ${data.tag}
+                        </span>
+                        <h3 class="text-3xl md:text-4xl font-bold text-gray-900 mb-3">${data.title}</h3>
+                        <p class="text-lg text-gray-600 mb-10">${data.subtitle}</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                            ${advantagesHtml}
+                        </div>
+
+                        ${data.infoBlock || ''}
+
+                        <h4 class="text-xl font-bold text-gray-900 mb-6 flex items-center mt-10">
+                            <i class="ph-fill ph-list-checks text-brand-600 mr-2 text-2xl"></i> 추천 교육 커리큘럼 <span class="text-sm font-normal text-gray-400 ml-3">(항목을 클릭하여 영상을 확인하세요)</span>
+                        </h4>
+                        <div class="mb-8">
+                            ${curriculumHtml}
+                        </div>
+
+                        <div class="text-center mt-8 border-t border-gray-100 pt-8">
+                            <button type="button" onclick="document.getElementById('proposal-content-area').classList.add('hidden')" class="px-8 py-3 rounded-xl font-bold text-gray-600 bg-white border border-gray-300 hover:bg-gray-50 hover:text-gray-900 transition-colors shadow-sm">
+                                상세 내용 닫기 <i class="ph-bold ph-caret-up ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            area.innerHTML = html;
+            area.classList.remove('hidden');
+
+            const yOffset = -120;
+            const y = area.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({top: y, behavior: 'smooth'});
+        }
+
+        // index.html 맨 아래 <script> 안에서,
+// 기존 "function sendProposalRequest() { ... }" 전체(웹훅 주소가 들어 있는 함수)를
+// 지우고 아래 내용으로 통째로 교체하세요. (버튼의 onclick="sendProposalRequest()" 는 그대로 사용)
+
+// 웹훅 주소가 아니라 "내 Worker 주소"입니다. (비밀 값 아님)
+const PROPOSAL_WORKER_URL = "https://safetytech-form.geltencorp.workers.dev";
+
+async function sendProposalRequest() {
+    const org = document.getElementById("req_org").value.trim();
+    const name = document.getElementById("req_name").value.trim();
+    const phone = document.getElementById("req_phone").value.trim();
+    const email = document.getElementById("req_email").value.trim();
+
+    if (!org || !name || !phone || !email) {
+        alert("모든 정보를 입력해 주세요!");
+        return;
+    }
+
+    const btn = document.querySelector('button[onclick="sendProposalRequest()"]');
+    const originalText = btn ? btn.textContent : "";
+    if (btn) { btn.disabled = true; btn.textContent = "전송 중..."; }
+
+    try {
+        const res = await fetch(PROPOSAL_WORKER_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ org, name, phone, email })
+        });
+        const result = await res.json().catch(() => ({}));
+        if (!res.ok || !result.ok) throw new Error(result.error || res.status);
+
+        alert("성공적으로 요청되었습니다! 메니저가 확인 후 신속하게 연락드리겠습니다.");
+        ["req_org", "req_name", "req_phone", "req_email"].forEach(id => {
+            document.getElementById(id).value = "";
+        });
+    } catch (error) {
+        console.error("전송 에러:", error);
+        alert("전송에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+    } finally {
+        if (btn) { btn.disabled = false; btn.textContent = originalText; }
+    }
+}
+    </script>
+</body>
+</html>
