@@ -46,38 +46,40 @@ def fetch_blog():
         count += 1
     return html
 
-# --- 2. 네이버 뉴스 (공식 API 적용 - 차단 100% 방지) ---
+# --- 2. 디스코드 스레드 뉴스 연동 ---
 def fetch_news():
-    print("네이버 뉴스 데이터 수집 중 (공식 API)...")
+    print("디스코드 스레드 뉴스 수집 중...")
     
-    # 대표님 전용 네이버 API 키 세팅 완료
-    client_id = "V3bLjIBKR3S8lYBXqpZ3"
-    client_secret = "GLTYclH7lH"
+    # 🚨 주의: 디스코드 개발자 센터에서 발급받은 '봇 토큰(Bot Token)'을 꼭 넣어주세요! 
+    # (웹훅 주소가 아닙니다. 봇 토큰이 필요합니다.)
+    DISCORD_TOKEN = "여기에_디스코드_봇_토큰_붙여넣기"
     
-    url = "https://openapi.naver.com/v1/search/news.json"
+    # 대표님이 주신 디스코드 스레드 ID 세팅 완료
+    THREAD_ID = "1522146071072084020"
+    
+    url = f"https://discord.com/api/v10/channels/{THREAD_ID}/messages?limit=5"
     headers = {
-        "X-Naver-Client-Id": client_id,
-        "X-Naver-Client-Secret": client_secret
-    }
-    params = {
-        "query": "안전택", # 검색어
-        "display": 5,      # 가져올 뉴스 개수
-        "sort": "date"     # 최신순 정렬
+        "Authorization": f"Bot {DISCORD_TOKEN}"
     }
     
     html = ""
     try:
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.get(url, headers=headers)
         response.raise_for_status()
-        data = response.json()
+        messages = response.json()
         
-        for item in data.get('items', []):
-            # API가 주는 제목의 <b> 태그 등 불필요한 기호 깔끔하게 제거
-            title = re.sub(r'<[^>]+>', '', item['title'])
-            title = title.replace('&quot;', '"').replace('&amp;', '&').replace('&lt;', '<').replace('&gt;', '>').replace('&apos;', "'")
-            link = item['link']
+        for msg in messages:
+            content = msg.get("content", "")
             
-            # API 특성상 뉴스 썸네일은 제공되지 않아 고화질 기본 이미지 적용
+            # 규칙(제목 | 링크)에 맞지 않는 메시지는 무시
+            if "|" not in content:
+                continue 
+                
+            parts = content.split("|", 1)
+            title = parts[0].strip()
+            link = parts[1].strip()
+            
+            # 뉴스 기본 썸네일 고화질 이미지
             img_url = "https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=400&auto=format&fit=crop"
             
             html += f"""
@@ -87,42 +89,25 @@ def fetch_news():
                     <div class="absolute inset-0 bg-black/5"></div>
                 </div>
                 <div class="p-4 flex flex-col flex-grow bg-white">
-                    <p class="text-[11px] text-brand-600 font-bold mb-1">최신 뉴스</p>
+                    <p class="text-[11px] text-brand-600 font-bold mb-1">안전택 소식</p>
                     <h3 class="text-sm font-bold text-gray-900 group-hover:text-brand-600 transition-colors line-clamp-2 leading-snug">{title}</h3>
                 </div>
             </div>"""
             
         if not html:
-            return "<!-- 검색된 뉴스가 0건입니다. -->"
+            return "<!-- 디스코드 스레드에 규칙(제목 | 링크)에 맞게 등록된 뉴스가 없습니다. -->"
         return html
     except Exception as e:
-        print(f"뉴스 수집 중 오류 발생: {e}")
-        return f"<!-- 뉴스 API 수집 실패: {e} -->"
+        print(f"디스코드 뉴스 수집 중 오류 발생: {e}")
+        return f"<!-- 디스코드 연동 실패: {e} -->"
 
-# --- 3. 유튜브 영상 (최신 내부 데이터 구조 반영) ---
+# --- 3. 유튜브 영상 (채널 ID 고정 방식 - 차단 100% 방지) ---
 def fetch_youtube():
     print("유튜브 데이터 수집 중...")
     try:
-        # 로봇이 아닌 일반 크롬 브라우저처럼 완벽하게 위장막 강화
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
-        }
+        # 🚨 대표님의 유튜브 채널 고유 ID(UC로 시작하는 24자리)를 아래에 직접 입력해 주세요!
+        channel_id = "여기에_유튜브_채널ID_붙여넣기"
         
-        # 채널 메인 홈에서 ID를 찾는 것이 훨씬 안정적입니다.
-        html_req = requests.get("https://www.youtube.com/@safetytech_official", headers=headers, timeout=10)
-        
-        # 🚨 핵심: 유튜브 최신 내부 데이터(ytInitialData)에서 UC로 시작하는 채널 고유 ID만 정확하게 추출
-        channel_id_match = re.search(r'"browseId":"(UC[\w-]+)"', html_req.text)
-        
-        # 혹시 못 찾을 경우를 대비한 예전 방식 2차 시도
-        if not channel_id_match:
-            channel_id_match = re.search(r'channel/(UC[\w-]+)', html_req.text)
-            
-        if not channel_id_match:
-            print("❌ 유튜브 채널 ID를 찾지 못했습니다.")
-            return "<!-- 유튜브 채널 ID를 찾을 수 없습니다. -->"
-        
-        channel_id = channel_id_match.group(1)
         feed_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={channel_id}"
         feed = feedparser.parse(feed_url)
 
