@@ -576,7 +576,8 @@ if __name__ == "__main__":
     print("환경변수 확인:")
     for k in ("DISCORD_BOT_TOKEN", "YOUTUBE_API_KEY"):
         print(f"  {k}: {'설정됨' if os.environ.get(k) else '❌ 없음'}")
-    print(f"  .env 파일: {'있음' if os.path.exists(os.path.join(BASE_DIR, '.env')) else '❌ 없음 (이름이 .env.txt 는 아닌지 확인)'}")
+    if not os.environ.get("GITHUB_ACTIONS"):  # .env 는 로컬 테스트용(Actions 는 Secrets 사용)
+        print(f"  .env 파일: {'있음' if os.path.exists(os.path.join(BASE_DIR, '.env')) else '❌ 없음 (이름이 .env.txt 는 아닌지 확인)'}")
     try:
         blog_html = fetch_blog()
         news_html = fetch_news()
