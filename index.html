@@ -638,7 +638,20 @@
         };
 
         // 제안서 폼 표시 함수
+        // 디스코드 메시지 제목에 쓰일 기관 이름 (마지막으로 클릭한 기관)
+        const proposalCategoryLabels = {
+            '학교': '🏫 학교 안전교육',
+            '지자체': '🏛️ 시/군/구청 안전교육',
+            '공공안전': '🚨 경찰/소방/보건소 안전교육',
+            '어르신': '👵 경로당/복지시설 안전교육',
+            '어린이': '👶 어린이 보호시설 안전교육',
+            '기업': '💼 기업/단체 산업안전교육',
+            '행사': '🎪 행사/렌탈 안전교육'
+        };
+        let selectedProposalCategory = '';
+
         function showProposalForm(category) {
+            selectedProposalCategory = proposalCategoryLabels[category] || '';
             const area = document.getElementById('proposal-content-area');
             const data = proposalData[category];
             
@@ -754,7 +767,7 @@ async function sendProposalRequest() {
         const res = await fetch(PROPOSAL_WORKER_URL, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ org, name, phone, email })
+            body: JSON.stringify({ org, name, phone, email, category: selectedProposalCategory })
         });
         const result = await res.json().catch(() => ({}));
         if (!res.ok || !result.ok) throw new Error(result.error || res.status);
