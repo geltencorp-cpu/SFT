@@ -215,7 +215,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                         <input type="text" id="req_org" placeholder="기관명 (예: 서울시청)" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-gray-50/50 focus:bg-white text-sm">
                         <input type="text" id="req_name" placeholder="담당자 성함" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-gray-50/50 focus:bg-white text-sm">
-                        <input type="tel" id="req_phone" placeholder="연락처 (- 없이 입력)" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-gray-50/50 focus:bg-white text-sm">
+                        <input type="tel" id="req_phone" placeholder="연락처 (010-0000-0000)" inputmode="numeric" autocomplete="tel" maxlength="13" oninput="formatPhoneInput(this)" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-gray-50/50 focus:bg-white text-sm">
                         <input type="email" id="req_email" placeholder="이메일 주소" class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors bg-gray-50/50 focus:bg-white text-sm">
                     </div>
                     
@@ -747,6 +747,26 @@
 
 // 웹훅 주소가 아니라 "내 Worker 주소"입니다. (비밀 값 아님)
 const PROPOSAL_WORKER_URL = "https://safetytech-form.geltencorp.workers.dev";
+
+// 연락처 자동 하이픈: 숫자만 남기고 최대 11자리, 010-0000-0000 형식으로 맞춤
+function formatPhoneInput(el) {
+    const d = el.value.replace(/\D/g, "").slice(0, 11);
+    let v;
+    if (d.startsWith("02")) {
+        // 서울 지역번호: 02-000-0000 / 02-0000-0000
+        const rest = d.slice(2, 10);
+        const mid = rest.length > 7 ? 4 : 3;
+        v = [d.slice(0, 2), rest.slice(0, mid), rest.slice(mid)].filter(Boolean).join("-");
+    } else if (/^1[5-9]/.test(d) && d.length <= 8) {
+        // 대표번호: 1588-0000
+        v = [d.slice(0, 4), d.slice(4)].filter(Boolean).join("-");
+    } else {
+        // 휴대폰/지역번호: 010-0000-0000 / 031-000-0000
+        const mid = d.length > 10 ? 4 : 3;
+        v = [d.slice(0, 3), d.slice(3, 3 + mid), d.slice(3 + mid)].filter(Boolean).join("-");
+    }
+    el.value = v;
+}
 
 async function sendProposalRequest() {
     const org = document.getElementById("req_org").value.trim();
