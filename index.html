@@ -663,13 +663,18 @@
             
             if (!data) return;
 
+            // 카드 위 이미지: assets/proposal/{기관}-{카드번호}.webp
+            const imagePrefix = { '학교': 'school', '지자체': 'city', '공공안전': 'public', '어르신': 'senior', '어린이': 'kids', '기업': 'company', '행사': 'event' }[category];
             let advantagesHtml = '';
-            data.advantages.forEach(adv => {
+            data.advantages.forEach((adv, i) => {
                 advantagesHtml += `
-                    <div class="bg-brand-50/50 p-5 rounded-2xl">
-                        <i class="ph-fill ${adv.icon} text-3xl text-brand-600 mb-2"></i>
-                        <h4 class="font-bold text-gray-900 mb-1">${adv.title}</h4>
-                        <p class="text-sm text-gray-600">${adv.desc}</p>
+                    <div class="bg-brand-50/50 rounded-2xl overflow-hidden flex flex-col">
+                        <img src="assets/proposal/${imagePrefix}-${i + 1}.webp" alt="${adv.title}" loading="lazy" class="w-full aspect-[4/3] object-cover" onerror="this.remove()">
+                        <div class="p-5">
+                            <i class="ph-fill ${adv.icon} text-3xl text-brand-600 mb-2"></i>
+                            <h4 class="font-bold text-gray-900 mb-1">${adv.title}</h4>
+                            <p class="text-sm text-gray-600">${adv.desc}</p>
+                        </div>
                     </div>
                 `;
             });
